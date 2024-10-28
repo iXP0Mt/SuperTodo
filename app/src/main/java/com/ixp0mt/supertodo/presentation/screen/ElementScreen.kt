@@ -1,30 +1,29 @@
-package com.ixp0mt.supertodo.presentation.screen.project
+package com.ixp0mt.supertodo.presentation.screen
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
+import com.ixp0mt.supertodo.domain.model.ElementParam
+import com.ixp0mt.supertodo.presentation.component.ST_DeleteAlertDialog
+import com.ixp0mt.supertodo.presentation.component.ST_ListElement
 import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
-import com.ixp0mt.supertodo.domain.util.TypeElement
-import com.ixp0mt.supertodo.presentation.screen.ElementScreen
 
 @Composable
-fun ProjectScreen(
-    viewModel: ProjectViewModel = hiltViewModel(),
+fun ElementScreen(
+    viewModel: ElementViewModel,
     screenState: ScreenState,
     onBackClick: () -> Unit,
     onEditClick: () -> Unit,
-    onElementClick: (typeElement: TypeElement, idElement: Long) -> Unit
+    onElementClick: (ElementParam) -> Unit,
+    onDeleteElement: () -> Unit,
 ) {
-
-    ElementScreen(
-        viewModel = viewModel,
-        screenState = screenState,
-        onBackClick = { onBackClick() },
-        onEditClick = { onEditClick() },
-        onElementClick = { onElementClick(it.typeElement, it.idElement) },
-        onDeleteElement = { viewModel.deleteCurrentElement() }
-    )
-
-    /*DisposableEffect(Unit) {
+    DisposableEffect(Unit) {
         viewModel.initScreen(screenState)
         onDispose { viewModel.clearScreenState() }
     }
@@ -43,10 +42,7 @@ fun ProjectScreen(
     LaunchedEffect(editClick) { if (editClick!!) onEditClick() }
     LaunchedEffect(elementClickInfo) {
         elementClickInfo?.let {
-            onElementClick(
-                it.typeElement,
-                it.idElement
-            )
+            onElementClick(it)
         }
     }
 
@@ -71,9 +67,9 @@ fun ProjectScreen(
                 viewModel.cancelDialogDelete()
             },
             onConfirmClick = {
-                viewModel.deleteCurrentElement()
+                onDeleteElement()
                 viewModel.cancelDialogDelete()
             }
         )
-    }*/
+    }
 }

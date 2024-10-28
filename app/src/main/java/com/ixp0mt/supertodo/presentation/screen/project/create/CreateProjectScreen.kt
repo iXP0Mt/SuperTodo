@@ -32,7 +32,6 @@ fun CreateProjectScreen(
     onSuccessSave: (idProject: Long) -> Unit,
     onBackClick: () -> Unit
 ) {
-
     val scope = rememberCoroutineScope()
 
     val focusRequester = remember { FocusRequester() }

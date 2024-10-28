@@ -65,8 +65,6 @@ class TaskViewModel @Inject constructor(
         if (getTaskInfo(idTask)) {
             val param = LocationParam(TypeLocation.TASK, idTask)
             getListInternalFolders(param)
-            getListInternalProjects(param)
-            getListInternalTasks(param)
         }
     }
 

@@ -1,19 +1,10 @@
 package com.ixp0mt.supertodo.presentation.screen.task
 
-import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
 import com.ixp0mt.supertodo.domain.util.TypeElement
-import com.ixp0mt.supertodo.presentation.component.ST_DeleteAlertDialog
-import com.ixp0mt.supertodo.presentation.component.ST_ListElement
+import com.ixp0mt.supertodo.presentation.screen.ElementScreen
 
 @Composable
 fun TaskScreen(
@@ -24,7 +15,16 @@ fun TaskScreen(
     onElementClick: (typeElement: TypeElement, idElement: Long) -> Unit
 ) {
 
-    DisposableEffect(Unit) {
+    ElementScreen(
+        viewModel = viewModel,
+        screenState = screenState,
+        onBackClick = { onBackClick() },
+        onEditClick = { onEditClick() },
+        onElementClick = { onElementClick(it.typeElement, it.idElement) },
+        onDeleteElement = { viewModel.deleteCurrentElement() }
+    )
+
+    /*DisposableEffect(Unit) {
         viewModel.initScreen(screenState)
         onDispose { viewModel.clearScreenState() }
     }
@@ -33,8 +33,6 @@ fun TaskScreen(
     val editClick by viewModel.editClick.observeAsState()
     val elementClickInfo by viewModel.elementClickInfo.observeAsState()
     val showDialogDelete by viewModel.showDialogDelete.observeAsState(false)
-
-    val listInternalTasks by viewModel.listInternalTasks.observeAsState()
 
     BackHandler { viewModel.handleBack() }
     LaunchedEffect(backClick) { backClick?.let { onBackClick() } }
@@ -46,10 +44,12 @@ fun TaskScreen(
                 it.idElement
             )
         }
-    }
+    }*/
+
+    //val listInternalTasks by viewModel.listInternalTasks.observeAsState()
 
 
-    Box(
+    /*Box(
         modifier = Modifier.fillMaxSize()
     ) {
         ST_ListElement(
@@ -71,5 +71,5 @@ fun TaskScreen(
                 viewModel.cancelDialogDelete()
             }
         )
-    }
+    }*/
 }
