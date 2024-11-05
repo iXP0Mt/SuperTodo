@@ -64,7 +64,7 @@ class TaskViewModel @Inject constructor(
     private suspend fun initTask(idTask: Long) {
         if (getTaskInfo(idTask)) {
             val param = LocationParam(TypeLocation.TASK, idTask)
-            getListInternalFolders(param)
+            getListInternalTasks(param)
         }
     }
 
