@@ -49,7 +49,6 @@ fun ST_TaskCard(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-
             Row(
                 modifier = Modifier
                     .fillMaxSize()
@@ -91,14 +90,6 @@ fun ST_TaskCard(
                     contentDescription = null
                 )
             }
-
-
-
-
-
-            //Spacer(modifier = Modifier.weight(1f))
-
-
         }
     }
 }

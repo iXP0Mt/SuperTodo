@@ -6,6 +6,7 @@ import com.ixp0mt.supertodo.domain.model.GetProjectByIdParam
 import com.ixp0mt.supertodo.domain.model.GetProjectsByTypeLocationParam
 import com.ixp0mt.supertodo.domain.model.LocationParam
 import com.ixp0mt.supertodo.domain.model.ProjectInfo
+import com.ixp0mt.supertodo.domain.model.SetCompleteParam
 import com.ixp0mt.supertodo.domain.repository.ProjectRepository
 
 class ProjectRepositoryImpl(private val database: Database) : ProjectRepository {
@@ -41,6 +42,14 @@ class ProjectRepositoryImpl(private val database: Database) : ProjectRepository 
 
     override suspend fun deleteByLocation(param: LocationParam): Int {
         return database.deleteProjectsByLocation(param)
+    }
+
+    override suspend fun setComplete(param: SetCompleteParam): Int {
+        return database.setCompleteProject(param)
+    }
+
+    override suspend fun removeComplete(idProject: Long): Int {
+        return database.removeCompleteProject(idProject)
     }
 
 

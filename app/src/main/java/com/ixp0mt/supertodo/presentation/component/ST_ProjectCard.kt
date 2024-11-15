@@ -1,6 +1,7 @@
 package com.ixp0mt.supertodo.presentation.component
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.ixp0mt.supertodo.R
@@ -26,45 +29,68 @@ import com.ixp0mt.supertodo.domain.model.ProjectInfo
 @Composable
 fun ST_ProjectCard(
     item: ProjectInfo,
-    onClick: () -> Unit
+    onClickMain: () -> Unit,
+    onClickExtend: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(65.dp)
-            .clickable(
-                onClick = { onClick() }
-            ),
+            .height(65.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onSurface
+            contentColor = if(item.dateCompleted == null) {
+                MaterialTheme.colorScheme.onSurface
+            } else {
+                MaterialTheme.colorScheme.onSurface.copy(0.5f)
+            }
         ),
         shape = RectangleShape,
     ) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-            ,verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                modifier = Modifier.padding(start = 10.dp, end = 10.dp),
-                imageVector = ImageVector.vectorResource(R.drawable.ic_project),
-                contentDescription = null
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(0.85f)
+                    .clickable { onClickMain() },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .padding(start = 10.dp, end = 10.dp),
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_project),
+                    contentDescription = null
+                )
+                Text(
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    text = item.name,
+                    style = if(item.dateCompleted == null) {
+                        LocalTextStyle.current
+                    } else {
+                        LocalTextStyle.current.copy(
+                            textDecoration = TextDecoration.LineThrough,
+                        )
+                    }
+                )
+            }
 
-            Text(
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                text = item.name
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Icon(
-                modifier = Modifier.padding(start = 10.dp, end = 10.dp),
-                imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_right),
-                contentDescription = null
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(0.15f)
+                    .clickable { onClickExtend() },
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .padding(end = 10.dp),
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_right),
+                    contentDescription = null
+                )
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.ixp0mt.supertodo.presentation.screen
+package com.ixp0mt.supertodo.presentation.screen.core
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

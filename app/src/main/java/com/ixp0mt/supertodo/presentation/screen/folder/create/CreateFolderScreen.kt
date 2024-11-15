@@ -4,9 +4,14 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -17,8 +22,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ixp0mt.supertodo.R
 import com.ixp0mt.supertodo.presentation.component.ST_TextField
 import com.ixp0mt.supertodo.presentation.component.showSnackbar
 import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
@@ -93,6 +104,37 @@ fun CreateFolderScreen(
                 onValueChange = { viewModel.changeDescription(it) },
                 placeholderText = "Описание папки",
             )
+
+            /*Button(
+                onClick = {
+
+                }
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .padding(start = 10.dp, end = 10.dp),
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_task),
+                    contentDescription = null
+                )
+                Text(
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    text = item.name,
+                    style = if(item.dateCompleted == null) {
+                        LocalTextStyle.current
+                    } else {
+                        LocalTextStyle.current.copy(
+                            textDecoration = TextDecoration.LineThrough,
+                        )
+                    }
+                )
+                Icon(
+                    modifier = Modifier
+                        .padding(end = 10.dp),
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_right),
+                    contentDescription = null
+                )
+            }*/
         }
     }
 }

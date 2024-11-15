@@ -1,6 +1,5 @@
 package com.ixp0mt.supertodo.presentation.screen.folder.edit
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -12,7 +11,7 @@ import com.ixp0mt.supertodo.domain.usecase.folder.SaveEditFolderUseCase
 import com.ixp0mt.supertodo.presentation.navigation.Routes
 import com.ixp0mt.supertodo.presentation.navigation.screen.Screen
 import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
-import com.ixp0mt.supertodo.presentation.screen.ElementEditViewModel
+import com.ixp0mt.supertodo.presentation.screen.core.ElementEditViewModel
 import com.ixp0mt.supertodo.presentation.util.TypeAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope

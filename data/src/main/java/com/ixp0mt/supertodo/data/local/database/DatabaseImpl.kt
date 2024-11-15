@@ -80,6 +80,14 @@ class DatabaseImpl(
         return db.projectDao().deleteByLocation(param.typeLocation, param.idLocation)
     }
 
+    override suspend fun setCompleteProject(param: SetCompleteParam): Int {
+        return db.projectDao().setComplete(param.idElement, param.dateComplete)
+    }
+
+    override suspend fun removeCompleteProject(idProject: Long): Int {
+        return db.projectDao().removeComplete(idProject)
+    }
+
 
     override suspend fun saveNewTask(task: Task): Long {
         return db.taskDao().insert(task)

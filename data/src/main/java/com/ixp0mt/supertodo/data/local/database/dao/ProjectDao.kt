@@ -30,4 +30,10 @@ interface ProjectDao {
 
     @Query("DELETE FROM projects WHERE typeLocation = :typeLocation AND idLocation = :idLocation")
     suspend fun deleteByLocation(typeLocation: TypeLocation, idLocation: Long): Int
+
+    @Query("UPDATE projects SET dateCompleted = :date WHERE idProject = :idProject")
+    suspend fun setComplete(idProject: Long, date: Long): Int
+
+    @Query("UPDATE projects SET dateCompleted = null WHERE idProject = :idProject")
+    suspend fun removeComplete(idProject: Long): Int
 }

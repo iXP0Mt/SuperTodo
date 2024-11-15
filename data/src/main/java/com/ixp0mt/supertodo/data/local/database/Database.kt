@@ -29,6 +29,8 @@ interface Database {
     suspend fun getProjectById(param: GetProjectByIdParam): Project
     suspend fun deleteProject(project: Project): Int
     suspend fun deleteProjectsByLocation(param: LocationParam): Int
+    suspend fun setCompleteProject(param: SetCompleteParam): Int
+    suspend fun removeCompleteProject(idProject: Long): Int
 
 
     suspend fun saveNewTask(task: Task): Long

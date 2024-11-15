@@ -31,7 +31,8 @@ fun ST_ListElement(
         items(listProjects) {
             ST_ProjectCard(
                 item = it,
-                onClick = { onClickExtend(TypeElement.PROJECT, it.idProject) }
+                onClickMain = { onClickMain(it) },
+                onClickExtend = { onClickExtend(TypeElement.PROJECT, it.idProject) }
             )
         }
         items(listTasks) {

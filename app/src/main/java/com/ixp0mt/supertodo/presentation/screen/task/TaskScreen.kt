@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
 import com.ixp0mt.supertodo.domain.util.TypeElement
-import com.ixp0mt.supertodo.presentation.screen.ElementScreen
+import com.ixp0mt.supertodo.presentation.screen.core.ElementScreen
 
 @Composable
 fun TaskScreen(

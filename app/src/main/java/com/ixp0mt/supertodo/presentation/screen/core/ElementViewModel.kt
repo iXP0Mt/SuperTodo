@@ -1,4 +1,4 @@
-package com.ixp0mt.supertodo.presentation.screen
+package com.ixp0mt.supertodo.presentation.screen.core
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -14,6 +14,7 @@ import com.ixp0mt.supertodo.domain.model.TaskInfo
 import com.ixp0mt.supertodo.domain.usecase.element.DeleteElementUseCase
 import com.ixp0mt.supertodo.domain.usecase.folder.GetFoldersByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.GetProjectsByLocationUseCase
+import com.ixp0mt.supertodo.domain.usecase.project.TurnCompleteProjectUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.GetTasksByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.TurnCompleteTaskUseCase
 import com.ixp0mt.supertodo.domain.util.TypeElement
@@ -29,7 +30,8 @@ open class ElementViewModel(
     private val getProjectsByLocationUseCase: GetProjectsByLocationUseCase,
     private val getTasksByLocationUseCase: GetTasksByLocationUseCase,
     private val deleteElementUseCase: DeleteElementUseCase,
-    private val turnCompleteTaskUseCase: TurnCompleteTaskUseCase
+    private val turnCompleteTaskUseCase: TurnCompleteTaskUseCase,
+    private val turnCompleteProjectUseCase: TurnCompleteProjectUseCase
 ) : ViewModel() {
 
     private val _backClick = MutableLiveData<Boolean?>(null)
@@ -166,7 +168,9 @@ open class ElementViewModel(
             is TaskInfo -> {
                 handleCompleteTask(element)
             }
-
+            is ProjectInfo -> {
+                handleCompleteProject(element)
+            }
             else -> {}
         }
     }
@@ -188,6 +192,26 @@ open class ElementViewModel(
                     _listInternalTasks.value = updatedListTasks
                 }
 
+                result.isFailure -> {}
+            }
+        }
+    }
+
+    private fun handleCompleteProject(project: ProjectInfo) {
+        viewModelScope.launch {
+            val result = turnCompleteProjectUseCase.execute(project)
+            when {
+                result.isSuccess -> {
+                    val newDateCompleted = result.getOrNull()
+                    val updatedListTasks = _listInternalProjects.value?.map { lProject ->
+                        if(lProject.idProject == project.idProject) {
+                            lProject.copy(dateCompleted = newDateCompleted)
+                        } else {
+                            lProject
+                        }
+                    } ?: emptyList()
+                    _listInternalProjects.value = updatedListTasks
+                }
                 result.isFailure -> {}
             }
         }

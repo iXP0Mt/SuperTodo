@@ -4,6 +4,7 @@ import com.ixp0mt.supertodo.domain.model.GetProjectByIdParam
 import com.ixp0mt.supertodo.domain.model.GetProjectsByTypeLocationParam
 import com.ixp0mt.supertodo.domain.model.LocationParam
 import com.ixp0mt.supertodo.domain.model.ProjectInfo
+import com.ixp0mt.supertodo.domain.model.SetCompleteParam
 
 interface ProjectRepository {
     suspend fun saveNew(project: ProjectInfo): Long
@@ -13,4 +14,6 @@ interface ProjectRepository {
     suspend fun getById(param: GetProjectByIdParam): ProjectInfo
     suspend fun delete(project: ProjectInfo): Int
     suspend fun deleteByLocation(param: LocationParam): Int
+    suspend fun setComplete(param: SetCompleteParam): Int
+    suspend fun removeComplete(idProject: Long): Int
 }

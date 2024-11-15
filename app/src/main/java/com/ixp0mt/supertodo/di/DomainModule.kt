@@ -15,6 +15,7 @@ import com.ixp0mt.supertodo.domain.usecase.project.SaveEditProjectUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.SaveEditTaskUseCase
 import com.ixp0mt.supertodo.domain.usecase.folder.SaveNewFolderUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.SaveNewProjectUseCase
+import com.ixp0mt.supertodo.domain.usecase.project.TurnCompleteProjectUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.SaveNewTaskUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.TurnCompleteTaskUseCase
 import dagger.Module
@@ -105,5 +106,10 @@ class DomainModule {
     @Provides
     fun provideTurnCompleteTaskUseCase(taskRepository: TaskRepository): TurnCompleteTaskUseCase {
         return TurnCompleteTaskUseCase(taskRepository)
+    }
+
+    @Provides
+    fun provideTurnCompleteProjectUseCase(projectRepository: ProjectRepository): TurnCompleteProjectUseCase {
+        return TurnCompleteProjectUseCase(projectRepository)
     }
 }
