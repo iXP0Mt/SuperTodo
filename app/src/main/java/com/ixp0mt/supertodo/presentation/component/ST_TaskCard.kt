@@ -1,5 +1,6 @@
 package com.ixp0mt.supertodo.presentation.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -10,12 +11,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -48,20 +51,24 @@ fun ST_TaskCard(
         Row(
             modifier = Modifier
                 .fillMaxSize()
+                .clickable { onClickExtend() },
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .weight(0.85f)
-                    .clickable { onClickMain() },
+                    .weight(0.87f),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    modifier = Modifier
-                        .padding(start = 10.dp, end = 10.dp),
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_task),
-                    contentDescription = null
-                )
+                IconButton(
+                    onClick = { onClickMain() }
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_task),
+                        contentDescription = null
+                    )
+                }
+
                 Text(
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
@@ -76,20 +83,12 @@ fun ST_TaskCard(
                 )
             }
 
-            Box(
+            Icon(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .weight(0.15f)
-                    .clickable { onClickExtend() },
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .padding(end = 10.dp),
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_right),
-                    contentDescription = null
-                )
-            }
+                    .weight(0.13f),
+                imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_right),
+                contentDescription = null
+            )
         }
     }
 }

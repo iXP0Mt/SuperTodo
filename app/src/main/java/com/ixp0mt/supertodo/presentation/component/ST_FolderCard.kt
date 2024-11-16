@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,10 +33,7 @@ fun ST_FolderCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(65.dp)
-            .clickable(
-                onClick = { onClick() }
-            ),
+            .height(65.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
             contentColor = MaterialTheme.colorScheme.onSurface
@@ -44,25 +43,32 @@ fun ST_FolderCard(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-            ,verticalAlignment = Alignment.CenterVertically
+                .clickable { onClick() },
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(0.87f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    modifier = Modifier.width(48.dp),
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_folder),
+                    contentDescription = null
+                )
+
+                Text(
+                    text = item.name,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 2,
+                )
+            }
+
             Icon(
-                modifier = Modifier.padding(start = 10.dp, end = 10.dp),
-                imageVector = ImageVector.vectorResource(R.drawable.ic_folder),
-                contentDescription = null
-            )
-
-            Text(
-                text = item.name,
-                color = MaterialTheme.colorScheme.onSurface,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 2,
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Icon(
-                modifier = Modifier.padding(start = 10.dp, end = 10.dp),
+                modifier = Modifier
+                    .weight(0.13f),
                 imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_right),
                 contentDescription = null
             )

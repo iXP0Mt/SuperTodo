@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -49,20 +50,24 @@ fun ST_ProjectCard(
         Row(
             modifier = Modifier
                 .fillMaxSize()
+                .clickable { onClickExtend() },
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .weight(0.85f)
-                    .clickable { onClickMain() },
+                    .weight(0.87f),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    modifier = Modifier
-                        .padding(start = 10.dp, end = 10.dp),
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_project),
-                    contentDescription = null
-                )
+                IconButton(
+                    onClick = { onClickMain() }
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_project),
+                        contentDescription = null
+                    )
+                }
+
                 Text(
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
@@ -77,20 +82,12 @@ fun ST_ProjectCard(
                 )
             }
 
-            Box(
+            Icon(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .weight(0.15f)
-                    .clickable { onClickExtend() },
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .padding(end = 10.dp),
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_right),
-                    contentDescription = null
-                )
-            }
+                    .weight(0.13f),
+                imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_right),
+                contentDescription = null
+            )
         }
     }
 }
