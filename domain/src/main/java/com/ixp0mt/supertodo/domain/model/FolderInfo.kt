@@ -4,10 +4,10 @@ import com.ixp0mt.supertodo.domain.util.TypeLocation
 
 data class FolderInfo(
     val idFolder: Long,
-    val name: String,
+    override val name: String,
     val description: String?,
-    val typeLocation: TypeLocation,
-    val idLocation: Long?,
+    override val typeLocation: TypeLocation,
+    override val idLocation: Long?,
     val dateCreate: Long,
     val dateEdit: Long? = null,
     val dateArchive: Long? = null

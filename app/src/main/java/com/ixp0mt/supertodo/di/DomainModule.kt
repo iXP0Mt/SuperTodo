@@ -4,6 +4,7 @@ import com.ixp0mt.supertodo.domain.repository.FolderRepository
 import com.ixp0mt.supertodo.domain.repository.ProjectRepository
 import com.ixp0mt.supertodo.domain.repository.TaskRepository
 import com.ixp0mt.supertodo.domain.usecase.element.DeleteElementUseCase
+import com.ixp0mt.supertodo.domain.usecase.element.GetNamesFullLocationElementUseCase
 import com.ixp0mt.supertodo.domain.usecase.folder.GetFolderByIdUseCase
 import com.ixp0mt.supertodo.domain.usecase.folder.GetFoldersByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.GetProjectByIdUseCase
@@ -111,5 +112,18 @@ class DomainModule {
     @Provides
     fun provideTurnCompleteProjectUseCase(projectRepository: ProjectRepository): TurnCompleteProjectUseCase {
         return TurnCompleteProjectUseCase(projectRepository)
+    }
+
+    @Provides
+    fun provideGetNamesFullLocationElementUseCase(
+        folderRepository: FolderRepository,
+        projectRepository: ProjectRepository,
+        taskRepository: TaskRepository
+    ): GetNamesFullLocationElementUseCase {
+        return GetNamesFullLocationElementUseCase(
+            folderRepository,
+            projectRepository,
+            taskRepository
+        )
     }
 }

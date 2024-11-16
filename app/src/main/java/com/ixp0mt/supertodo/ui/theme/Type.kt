@@ -15,6 +15,18 @@ val Typography = Typography(
     ),
     titleLarge = TextStyle(
         fontSize = 18.sp
+    ),
+    titleMedium = TextStyle(
+        fontSize = 15.sp
+    ),
+    headlineLarge = TextStyle(
+        fontSize = 18.sp
+    ),
+    bodyLarge = TextStyle(
+        fontSize = 15.sp
+    ),
+    bodyMedium = TextStyle(
+        fontSize = 15.sp
     )
     /*bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,

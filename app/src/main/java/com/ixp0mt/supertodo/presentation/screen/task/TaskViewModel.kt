@@ -1,12 +1,14 @@
 package com.ixp0mt.supertodo.presentation.screen.task
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ixp0mt.supertodo.domain.util.TypeLocation
 import com.ixp0mt.supertodo.domain.model.GetTaskByIdParam
 import com.ixp0mt.supertodo.domain.model.LocationParam
 import com.ixp0mt.supertodo.domain.model.TaskInfo
 import com.ixp0mt.supertodo.domain.usecase.element.DeleteElementUseCase
+import com.ixp0mt.supertodo.domain.usecase.element.GetNamesFullLocationElementUseCase
 import com.ixp0mt.supertodo.domain.usecase.folder.GetFoldersByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.GetProjectsByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.TurnCompleteProjectUseCase
@@ -27,6 +29,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TaskViewModel @Inject constructor(
     private val getTaskByIdUseCase: GetTaskByIdUseCase,
+    private val getNamesFullLocationElementUseCase: GetNamesFullLocationElementUseCase,
     getFoldersByLocationUseCase: GetFoldersByLocationUseCase,
     getProjectsByLocationUseCase: GetProjectsByLocationUseCase,
     getTasksByLocationUseCase: GetTasksByLocationUseCase,
@@ -42,6 +45,10 @@ class TaskViewModel @Inject constructor(
     turnCompleteProjectUseCase = turnCompleteProjectUseCase
 ) {
     private val _taskInfo = MutableLiveData<TaskInfo>(TaskInfo.empty())
+    val taskInfo: LiveData<TaskInfo> = _taskInfo
+
+    private val _listPedigree = MutableLiveData<List<String>>(emptyList())
+    val listPedigree: LiveData<List<String>> = _listPedigree
 
     override fun getScreen(screenState: ScreenState): Screen? =
         screenState.currentScreen as? Screen.Task
@@ -66,8 +73,19 @@ class TaskViewModel @Inject constructor(
 
     private suspend fun initTask(idTask: Long) {
         if (getTaskInfo(idTask)) {
-            val param = LocationParam(TypeLocation.TASK, idTask)
-            getListInternalTasks(param)
+            getListNamesPedigree(
+                LocationParam(
+                    typeLocation = _taskInfo.value!!.typeLocation,
+                    idLocation = _taskInfo.value!!.idLocation ?: 0L
+                )
+            )
+
+            getListInternalTasks(
+                LocationParam(
+                    typeLocation = TypeLocation.TASK,
+                    idLocation = idTask
+                )
+            )
         }
     }
 
@@ -91,6 +109,23 @@ class TaskViewModel @Inject constructor(
 
     fun deleteCurrentElement() {
         deleteElement(_taskInfo.value!!)
+    }
+
+    private suspend fun getListNamesPedigree(param: LocationParam): Boolean {
+        val result = getNamesFullLocationElementUseCase.execute(param)
+        when {
+            result.isSuccess -> {
+                _listPedigree.value = result.getOrDefault(emptyList())
+                return true
+            }
+
+            result.isFailure -> {
+                val e = result.exceptionOrNull()
+                Log.d("ttt", "e: $e !!!")
+                return false
+            }
+        }
+        return false
     }
 }
 /*
