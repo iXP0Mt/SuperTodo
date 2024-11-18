@@ -25,5 +25,18 @@ data class FolderInfo(
                 dateArchive = null
             )
         }
+
+        fun main(): FolderInfo {
+            return FolderInfo(
+                idFolder = -1,
+                name = "Главная папка",
+                description = null,
+                typeLocation = TypeLocation.MAIN,
+                idLocation = null,
+                dateCreate = 0,
+                dateEdit = null,
+                dateArchive = null
+            )
+        }
     }
 }

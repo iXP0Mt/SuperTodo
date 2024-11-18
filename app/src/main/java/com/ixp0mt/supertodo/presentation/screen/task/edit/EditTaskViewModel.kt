@@ -4,11 +4,15 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.ixp0mt.supertodo.R
 import com.ixp0mt.supertodo.domain.util.SettingConstant
 import com.ixp0mt.supertodo.domain.model.GetTaskByIdParam
+import com.ixp0mt.supertodo.domain.model.LocationParam
 import com.ixp0mt.supertodo.domain.model.TaskInfo
+import com.ixp0mt.supertodo.domain.usecase.element.GetElementByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.GetTaskByIdUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.SaveEditTaskUseCase
+import com.ixp0mt.supertodo.domain.util.TypeLocation
 import com.ixp0mt.supertodo.presentation.navigation.Routes
 import com.ixp0mt.supertodo.presentation.navigation.screen.Screen
 import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
@@ -24,7 +28,8 @@ import javax.inject.Inject
 @HiltViewModel
 class EditTaskViewModel @Inject constructor(
     private val getTaskByIdUseCase: GetTaskByIdUseCase,
-    private val saveEditTaskUseCase: SaveEditTaskUseCase
+    private val saveEditTaskUseCase: SaveEditTaskUseCase,
+    private val getElementByLocationUseCase: GetElementByLocationUseCase
 ) : ElementEditViewModel() {
     private val _taskInfo = MutableLiveData<TaskInfo>(TaskInfo.empty())
 
@@ -33,6 +38,12 @@ class EditTaskViewModel @Inject constructor(
 
     private val _description = MutableLiveData<String>("")
     val description: LiveData<String> = _description
+
+    private val _nameLocation = MutableLiveData<String>("")
+    val nameLocation: LiveData<String> = _nameLocation
+
+    private val _idIcon = MutableLiveData<Int>(null)
+    val idIcon: LiveData<Int> = _idIcon
 
 
     override fun getScreen(screenState: ScreenState): Screen? =
@@ -74,7 +85,9 @@ class EditTaskViewModel @Inject constructor(
     private suspend fun initTask(idTask: Long) {
         if (getTaskInfo(idTask)) {
             _nameTask.value = _taskInfo.value!!.name
-            _description.value = _taskInfo.value?.description ?: ""
+            _description.value = _taskInfo.value!!.description ?: ""
+            _nameLocation.value = getNameLocation(_taskInfo.value!!.typeLocation, _taskInfo.value!!.idLocation ?: 0L)
+            _idIcon.value = getIconIdLocation(_taskInfo.value!!.typeLocation)
         }
     }
 
@@ -139,6 +152,32 @@ class EditTaskViewModel @Inject constructor(
                     setErrorMsg(e?.message)
                 }
             }
+        }
+    }
+
+    private suspend fun getNameLocation(typeLocation: TypeLocation, idLocation: Long): String {
+        val param = LocationParam(typeLocation, idLocation)
+        val result = getElementByLocationUseCase.execute(param)
+        when {
+            result.isSuccess -> {
+                val element = result.getOrThrow()
+                return element.name
+            }
+            result.isFailure -> {
+                val e = result.exceptionOrNull()
+                Log.d("ttt", "Exception: $e")
+            }
+        }
+        return "NULL"
+    }
+
+    private fun getIconIdLocation(typeLocation: TypeLocation): Int {
+        return when(typeLocation) {
+            TypeLocation.FOLDER -> R.drawable.ic_folder
+            TypeLocation.PROJECT -> R.drawable.ic_project
+            TypeLocation.TASK -> R.drawable.ic_task
+            TypeLocation.MAIN -> R.drawable.ic_home
+            else -> R.drawable.baseline_delete_forever_24
         }
     }
 }
