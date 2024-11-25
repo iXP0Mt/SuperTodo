@@ -7,7 +7,7 @@ enum class TypeLocation {
     TASK;
 
     companion object {
-        fun getByStr(str: String): TypeLocation {
+        fun convert(str: String): TypeLocation {
             return entries.find {
                 str.contains(it.name, ignoreCase = true)
             } ?: MAIN

@@ -66,7 +66,8 @@ sealed interface ActionBottomBar {
                 Routes.ProjectEdit.rawRoute,
                 Routes.Task.rawRoute,
                 Routes.TaskCreate.rawRoute,
-                Routes.TaskEdit.rawRoute
+                Routes.TaskEdit.rawRoute,
+                Routes.ChangeLocation.rawRoute
             )
             override val label: String? = null
             override val iconId: Int = R.drawable.ic_folder
@@ -81,7 +82,8 @@ sealed interface ActionBottomBar {
                 Routes.ProjectEdit.rawRoute,
                 Routes.Task.rawRoute,
                 Routes.TaskCreate.rawRoute,
-                Routes.TaskEdit.rawRoute
+                Routes.TaskEdit.rawRoute,
+                Routes.ChangeLocation.rawRoute
             )
             override val label: String? = null
             override val iconId: Int = R.drawable.ic_project
@@ -95,7 +97,8 @@ sealed interface ActionBottomBar {
                 Routes.ProjectCreate.rawRoute,
                 Routes.ProjectEdit.rawRoute,
                 Routes.TaskCreate.rawRoute,
-                Routes.TaskEdit.rawRoute
+                Routes.TaskEdit.rawRoute,
+                Routes.ChangeLocation.rawRoute
             )
             override val label: String? = null
             override val iconId: Int = R.drawable.ic_task

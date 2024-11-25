@@ -32,7 +32,7 @@ open class ElementCreateViewModel : ViewModel() {
 
 
     protected open fun clearScreenState() {
-        _idLocationSource.value = 0
+        _idLocationSource.value = 0L
         _typeLocationSource.value = TypeLocation.MAIN
         _backClick.value = null
         _errorMsg.value = null
@@ -48,7 +48,7 @@ open class ElementCreateViewModel : ViewModel() {
         val screen = getScreen(screenState)
         screen?.let {
             _idLocationSource.value = screenState.previousArgs["ID"]?.toLongOrNull()
-            _typeLocationSource.value = TypeLocation.getByStr(screenState.previousRawRoute ?: "")
+            _typeLocationSource.value = TypeLocation.convert(screenState.previousRawRoute ?: "")
             job = viewModelScope.launch {
                 checkAction(screen, this)
             }

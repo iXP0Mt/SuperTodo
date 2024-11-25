@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import com.ixp0mt.supertodo.presentation.navigation.top.ActionTopBar
 import kotlinx.coroutines.CoroutineScope
@@ -31,6 +32,9 @@ class ScreenState(
         private set
 
     var previousArgs by mutableStateOf<Map<String, String>>(emptyMap())
+        private set
+
+    var savedStateHandle by mutableStateOf<SavedStateHandle>(SavedStateHandle())
         private set
 
     val isVisible: Boolean
@@ -71,6 +75,8 @@ class ScreenState(
                 previousArgs = prevArgs?.keySet()?.associateWith {
                     prevArgs.getString(it).orEmpty()
                 } ?: emptyMap()
+
+                savedStateHandle = backStackEntry.savedStateHandle
             }
             .launchIn(scope)
     }

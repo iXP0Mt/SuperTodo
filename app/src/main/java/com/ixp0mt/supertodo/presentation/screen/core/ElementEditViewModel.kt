@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ixp0mt.supertodo.domain.model.LocationParam
+import com.ixp0mt.supertodo.domain.util.TypeLocation
 import com.ixp0mt.supertodo.presentation.navigation.screen.Screen
 import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
 import kotlinx.coroutines.CoroutineScope
@@ -22,10 +24,13 @@ open class ElementEditViewModel : ViewModel() {
     private val _showKeyboard = MutableLiveData<Boolean>(true)
     val showKeyboard: LiveData<Boolean> = _showKeyboard
 
+    protected val _locationInfo = MutableLiveData<LocationParam?>(null)
+
     private lateinit var job: Job
 
 
     protected open fun clearScreenState() {
+        _locationInfo.value = null
         _saveEditState.value = false
         _backClick.value = null
         _errorMsg.value = null
@@ -35,9 +40,15 @@ open class ElementEditViewModel : ViewModel() {
     fun initScreen(screenState: ScreenState) {
         val screen = getScreen(screenState)
         screen?.let {
-            val idFolder = getIdElementFromArgs(screenState)
-            idFolder?.let {
+            val idElement = getIdElementFromArgs(screenState)
+            idElement?.let {
                 job = viewModelScope.launch {
+                    val typeLocation: TypeLocation? = screenState.savedStateHandle["typeLocation"]
+                    val idLocation: Long? = screenState.savedStateHandle["idLocation"]
+                    if(typeLocation != null && idLocation != null) {
+                        _locationInfo.value = LocationParam(typeLocation, idLocation)
+                    }
+
                     initElement(it)
                     checkAction(screen, this)
                 }

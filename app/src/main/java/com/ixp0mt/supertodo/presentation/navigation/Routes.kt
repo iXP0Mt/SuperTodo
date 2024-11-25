@@ -1,5 +1,7 @@
 package com.ixp0mt.supertodo.presentation.navigation
 
+import com.ixp0mt.supertodo.domain.util.TypeLocation
+
 
 sealed class Routes(
     val rawRoute: String,
@@ -30,7 +32,7 @@ sealed class Routes(
 
     data object FolderEdit : Routes("folder_edit", "ID") {
         const val ID = "ID"
-        operator fun invoke(idFolder: Long): String = rawRoute.appendArgs(Folder.ID to idFolder)
+        operator fun invoke(idFolder: Long): String = rawRoute.appendArgs(ID to idFolder)
     }
 
 
@@ -43,7 +45,7 @@ sealed class Routes(
 
     data object ProjectEdit : Routes("project_edit", "ID") {
         const val ID = "ID"
-        operator fun invoke(idProject: Long): String = rawRoute.appendArgs(Folder.ID to idProject)
+        operator fun invoke(idProject: Long): String = rawRoute.appendArgs(ID to idProject)
     }
 
 
@@ -56,7 +58,13 @@ sealed class Routes(
 
     data object TaskEdit : Routes("task_edit", "ID") {
         const val ID = "ID"
-        operator fun invoke(idTask: Long): String = rawRoute.appendArgs(Folder.ID to idTask)
+        operator fun invoke(idTask: Long): String = rawRoute.appendArgs(ID to idTask)
+    }
+
+    data object ChangeLocation : Routes("changeLocation", "TYPE", "ID") {
+        const val TYPE = "TYPE"
+        const val ID = "ID"
+        operator fun invoke(typeLocation: TypeLocation, idLocation: Long): String = rawRoute.appendArgs(TYPE to typeLocation, ID to idLocation)
     }
 }
 

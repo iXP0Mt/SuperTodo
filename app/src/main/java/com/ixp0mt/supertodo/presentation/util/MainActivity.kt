@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
     private val appEntryViewModel: AppEntryViewModel by viewModels()
     private val bottomBarViewModel: BottomBarViewModel by viewModels()
 
-    @SuppressLint("RestrictedApi")
+    //@SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

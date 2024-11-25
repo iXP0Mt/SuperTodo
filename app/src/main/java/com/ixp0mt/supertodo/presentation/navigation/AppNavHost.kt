@@ -7,11 +7,14 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.ixp0mt.supertodo.domain.model.LocationParam
 import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
 import com.ixp0mt.supertodo.presentation.screen.folder.FolderScreen
 import com.ixp0mt.supertodo.presentation.screen.folder.create.CreateFolderScreen
@@ -24,7 +27,9 @@ import com.ixp0mt.supertodo.presentation.screen.task.TaskScreen
 import com.ixp0mt.supertodo.presentation.screen.task.create.CreateTaskScreen
 import com.ixp0mt.supertodo.presentation.screen.task.edit.EditTaskScreen
 import com.ixp0mt.supertodo.domain.util.TypeElement
+import com.ixp0mt.supertodo.domain.util.TypeLocation
 import com.ixp0mt.supertodo.presentation.screen.loading.LoadingScreen
+import com.ixp0mt.supertodo.presentation.screen.location.ChangeLocationScreen
 
 
 @Composable
@@ -173,7 +178,30 @@ fun AppNavHost(
             EditTaskScreen(
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
-                onBackClick = { navHostController.navigateBack() }
+                onBackClick = { navHostController.navigateBack() },
+                onLocationClick = { typeLocation, idLocation ->
+                    navHostController.navigate(Routes.ChangeLocation(typeLocation, idLocation))
+                }
+            )
+        }
+
+        composable(Routes.ChangeLocation.fullRoute) {
+            ChangeLocationScreen(
+                screenState = screenState,
+                onBackClick = { navHostController.navigateBack() },
+                onSaveClick = { locationParam: LocationParam ->
+                    if(navHostController.canGoBack) {
+                        navHostController.previousBackStackEntry?.savedStateHandle?.set("typeLocation", locationParam.typeLocation)
+                        navHostController.previousBackStackEntry?.savedStateHandle?.set("idLocation", locationParam.idLocation)
+                        navHostController.popBackStack()
+                    }
+                },
+                onElementClick = {
+                    Log.d("ttt","type = ${it.typeLocation} | id = ${it.idLocation}")
+                    navHostController.navigate(Routes.ChangeLocation(it.typeLocation, it.idLocation)) {
+                        popUpTo(Routes.ChangeLocation.fullRoute) { inclusive = true }
+                    }
+                },
             )
         }
     }

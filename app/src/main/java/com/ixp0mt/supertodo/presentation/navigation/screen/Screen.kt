@@ -2,6 +2,7 @@ package com.ixp0mt.supertodo.presentation.navigation.screen
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -185,6 +186,21 @@ sealed interface Screen {
             ActionTopBar.SaveItem { _buttons.tryEmit(it) }
         )
     }
+
+    class ChangeLocation : Screen {
+        private val _buttons = MutableSharedFlow<TypeAction>(extraBufferCapacity = 1)
+        val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
+
+        override val route: Routes = Routes.ChangeLocation
+        override val isAppBarVisible: Boolean = true
+        override val navigationIcon: ImageVector = Icons.Default.Close
+        override val navigationIconContentDescription: String? = null
+        override val onNavigationIconClick: (() -> Unit) = { _buttons.tryEmit(TypeAction.ACTION_NAV_BACK) }
+        override val title: String = "Изменить расположение"
+        override val actionsTopBar: List<ActionTopBar> = listOf(
+            ActionTopBar.SaveItem { _buttons.tryEmit(it) }
+        )
+    }
 }
 
 
@@ -205,6 +221,8 @@ fun getScreen(rawRoute: String?): Screen? {
         Routes.Task.rawRoute -> Screen.Task()
         Routes.TaskCreate.rawRoute -> Screen.TaskCreate()
         Routes.TaskEdit.rawRoute -> Screen.TaskEdit()
+
+        Routes.ChangeLocation.rawRoute -> Screen.ChangeLocation()
         else -> null
     }
 }

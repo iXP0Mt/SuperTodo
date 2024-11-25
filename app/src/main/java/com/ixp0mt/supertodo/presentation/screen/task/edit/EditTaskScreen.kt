@@ -39,6 +39,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ixp0mt.supertodo.R
+import com.ixp0mt.supertodo.domain.util.TypeElement
+import com.ixp0mt.supertodo.domain.util.TypeLocation
 import com.ixp0mt.supertodo.presentation.component.ST_LocationCard
 import com.ixp0mt.supertodo.presentation.component.ST_TextField
 import com.ixp0mt.supertodo.presentation.component.showSnackbar
@@ -49,7 +51,8 @@ fun EditTaskScreen(
     viewModel: EditTaskViewModel = hiltViewModel(),
     screenState: ScreenState,
     snackbarHostState: SnackbarHostState,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onLocationClick: (typeLocation: TypeLocation, idLocation: Long) -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
@@ -65,6 +68,7 @@ fun EditTaskScreen(
     val keyboard = LocalSoftwareKeyboardController.current
     val showKeyboard by viewModel.showKeyboard.observeAsState()
 
+    val taskInfo by viewModel.taskInfo.observeAsState()
     val nameTask by viewModel.nameTask.observeAsState()
     val description by viewModel.description.observeAsState()
     val nameLocation by viewModel.nameLocation.observeAsState()
@@ -110,7 +114,7 @@ fun EditTaskScreen(
             ST_LocationCard(
                 name = nameLocation!!,
                 idIcon = idIcon,
-                onClick = {  }
+                onClick = { onLocationClick(taskInfo!!.typeLocation, taskInfo!!.idLocation ?: 0L) }
             )
         }
     }
