@@ -5,7 +5,7 @@ import com.ixp0mt.supertodo.domain.model.TaskInfo
 import com.ixp0mt.supertodo.domain.repository.TaskRepository
 
 class GetTaskByIdUseCase(private val taskRepository: TaskRepository) {
-    suspend fun execute(param: GetTaskByIdParam): Result<TaskInfo> {
+    suspend operator fun invoke(param: GetTaskByIdParam): Result<TaskInfo> {
         return try {
             val response = taskRepository.getById(param)
             Result.success(response)

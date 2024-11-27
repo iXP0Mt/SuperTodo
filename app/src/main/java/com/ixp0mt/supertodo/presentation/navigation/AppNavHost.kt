@@ -1,16 +1,13 @@
 package com.ixp0mt.supertodo.presentation.navigation
 
 import android.util.Log
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,7 +24,6 @@ import com.ixp0mt.supertodo.presentation.screen.task.TaskScreen
 import com.ixp0mt.supertodo.presentation.screen.task.create.CreateTaskScreen
 import com.ixp0mt.supertodo.presentation.screen.task.edit.EditTaskScreen
 import com.ixp0mt.supertodo.domain.util.TypeElement
-import com.ixp0mt.supertodo.domain.util.TypeLocation
 import com.ixp0mt.supertodo.presentation.screen.loading.LoadingScreen
 import com.ixp0mt.supertodo.presentation.screen.location.ChangeLocationScreen
 
@@ -61,20 +57,14 @@ fun AppNavHost(
         composable(Routes.MainFolder.fullRoute) {
             MainFolderScreen(
                 screenState = screenState,
-                onElementClick = { typeElement, idElement ->
-                    navigateToElementScreen(navHostController, typeElement, idElement)
-                }
+                onElementClick = { navigateToElementScreen(navHostController, it.typeElement, it.idElement) }
             )
         }
         composable(Routes.Folder.fullRoute) {
             FolderScreen(
                 screenState = screenState,
-                onBackClick = {
-                    navHostController.navigateBack()
-                },
-                onElementClick = { typeElement, idElement ->
-                    navigateToElementScreen(navHostController, typeElement, idElement)
-                },
+                onBackClick = { navHostController.navigateBack() },
+                onElementClick = { navigateToElementScreen(navHostController, it.typeElement, it.idElement) },
                 onEditClick = {
                     val idFolder = screenState.currentArgs[Routes.Folder.ID]?.toLongOrNull() ?: 0
                     navHostController.navigate(Routes.FolderEdit(idFolder))
@@ -115,9 +105,7 @@ fun AppNavHost(
                 onBackClick = {
                     navHostController.navigateBack()
                 },
-                onElementClick = { typeElement, idElement ->
-                    navigateToElementScreen(navHostController, typeElement, idElement)
-                },
+                onElementClick = { navigateToElementScreen(navHostController, it.typeElement, it.idElement) },
                 onEditClick = {
                     val idProject = screenState.currentArgs[Routes.Project.ID]?.toLongOrNull() ?: 0
                     navHostController.navigate(Routes.ProjectEdit(idProject))
@@ -154,9 +142,7 @@ fun AppNavHost(
                     val idTask = screenState.currentArgs[Routes.Task.ID]?.toLongOrNull() ?: 0
                     navHostController.navigate(Routes.TaskEdit(idTask))
                 },
-                onElementClick = { typeElement, idElement ->
-                    navigateToElementScreen(navHostController, typeElement, idElement)
-                }
+                onElementClick = { navigateToElementScreen(navHostController, it.typeElement, it.idElement) }
             )
         }
         composable(Routes.TaskCreate.fullRoute) {
@@ -218,6 +204,7 @@ private fun navigateToElementScreen(
         TypeElement.FOLDER -> Routes.Folder(idElement)
         TypeElement.PROJECT -> Routes.Project(idElement)
         TypeElement.TASK -> Routes.Task(idElement)
+        else -> return
     }
     navHostController.navigate(route) {
         //launchSingleTop = true

@@ -16,8 +16,8 @@ fun ST_ListElement(
     listFolders: List<FolderInfo> = emptyList(),
     listProjects: List<ProjectInfo> = emptyList(),
     listTasks: List<TaskInfo> = emptyList(),
-    onClickMain: (ElementInfo) -> Unit,
-    onClickExtend: (TypeElement, Long) -> Unit
+    onSpecialClick: (ElementInfo) -> Unit,
+    onElementClick: (TypeElement, Long) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
@@ -25,21 +25,21 @@ fun ST_ListElement(
         items(listFolders) {
             ST_FolderCard(
                 item = it,
-                onClick = { onClickExtend(TypeElement.FOLDER, it.idFolder) }
+                onElementClick = { onElementClick(TypeElement.FOLDER, it.idFolder) }
             )
         }
         items(listProjects) {
             ST_ProjectCard(
                 item = it,
-                onClickMain = { onClickMain(it) },
-                onClickExtend = { onClickExtend(TypeElement.PROJECT, it.idProject) }
+                onSpecialClick = { onSpecialClick(it) },
+                onElementClick = { onElementClick(TypeElement.PROJECT, it.idProject) }
             )
         }
         items(listTasks) {
             ST_TaskCard(
                 item = it,
-                onClickMain = { onClickMain(it) },
-                onClickExtend = { onClickExtend(TypeElement.TASK, it.idTask) }
+                onSpecialClick = { onSpecialClick(it) },
+                onElementClick = { onElementClick(TypeElement.TASK, it.idTask) }
             )
         }
     }

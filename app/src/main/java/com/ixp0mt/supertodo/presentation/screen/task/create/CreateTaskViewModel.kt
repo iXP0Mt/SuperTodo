@@ -77,7 +77,7 @@ class CreateTaskViewModel @Inject constructor(
             name = _nameTask.value!!,
             description = _description.value,
             typeLocation = _typeLocationSource.value!!,
-            idLocation = _idLocationSource.value,
+            idLocation = _idLocationSource.value!!,
             dateCreate = System.currentTimeMillis(),
             dateEdit = null,
             dateArchive = null,

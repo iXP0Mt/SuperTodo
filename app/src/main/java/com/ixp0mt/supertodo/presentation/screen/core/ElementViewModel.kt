@@ -3,7 +3,6 @@ package com.ixp0mt.supertodo.presentation.screen.core
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ixp0mt.supertodo.domain.model.ElementInfo
 import com.ixp0mt.supertodo.domain.model.ElementParam
@@ -12,208 +11,312 @@ import com.ixp0mt.supertodo.domain.model.LocationParam
 import com.ixp0mt.supertodo.domain.model.ProjectInfo
 import com.ixp0mt.supertodo.domain.model.TaskInfo
 import com.ixp0mt.supertodo.domain.usecase.element.DeleteElementUseCase
+import com.ixp0mt.supertodo.domain.usecase.element.GetNamesFullLocationElementUseCase
+import com.ixp0mt.supertodo.domain.usecase.folder.GetFolderByIdUseCase
 import com.ixp0mt.supertodo.domain.usecase.folder.GetFoldersByLocationUseCase
+import com.ixp0mt.supertodo.domain.usecase.project.GetProjectByIdUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.GetProjectsByLocationUseCase
-import com.ixp0mt.supertodo.domain.usecase.project.TurnCompleteProjectUseCase
+import com.ixp0mt.supertodo.domain.usecase.project.MarkCompleteProjectUseCase
+import com.ixp0mt.supertodo.domain.usecase.task.GetTaskByIdUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.GetTasksByLocationUseCase
-import com.ixp0mt.supertodo.domain.usecase.task.TurnCompleteTaskUseCase
+import com.ixp0mt.supertodo.domain.usecase.task.MarkCompleteTaskUseCase
 import com.ixp0mt.supertodo.domain.util.TypeElement
-import com.ixp0mt.supertodo.presentation.navigation.screen.Screen
+import com.ixp0mt.supertodo.domain.util.TypeLocation
+import com.ixp0mt.supertodo.presentation.navigation.Routes
 import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import com.ixp0mt.supertodo.presentation.util.TypeAction
 import kotlinx.coroutines.launch
 
+abstract class ElementViewModel(
+    getFoldersByLocationUseCase: GetFoldersByLocationUseCase? = null,
+    getProjectsByLocationUseCase: GetProjectsByLocationUseCase? = null,
+    getTasksByLocationUseCase: GetTasksByLocationUseCase? = null,
+    getFolderByIdUseCase: GetFolderByIdUseCase? = null,
+    getProjectByIdUseCase: GetProjectByIdUseCase? = null,
+    getTaskByIdUseCase: GetTaskByIdUseCase? = null,
+    private val markCompleteProjectUseCase: MarkCompleteProjectUseCase? = null,
+    private val markCompleteTaskUseCase: MarkCompleteTaskUseCase,
+    private val getNamesFullLocationElementUseCase: GetNamesFullLocationElementUseCase? = null,
+    private val deleteElementUseCase: DeleteElementUseCase? = null
+) : BaseViewModel(
+    getFoldersByLocationUseCase = getFoldersByLocationUseCase,
+    getProjectsByLocationUseCase = getProjectsByLocationUseCase,
+    getTasksByLocationUseCase = getTasksByLocationUseCase,
+    getFolderByIdUseCase = getFolderByIdUseCase,
+    getProjectByIdUseCase = getProjectByIdUseCase,
+    getTaskByIdUseCase = getTaskByIdUseCase
+) {
+    private val _elementInfo = MutableLiveData<ElementInfo?>(null)
+    val elementInfo: LiveData<ElementInfo?> = _elementInfo
 
-open class ElementViewModel(
-    private val getFoldersByLocationUseCase: GetFoldersByLocationUseCase,
-    private val getProjectsByLocationUseCase: GetProjectsByLocationUseCase,
-    private val getTasksByLocationUseCase: GetTasksByLocationUseCase,
-    private val deleteElementUseCase: DeleteElementUseCase,
-    private val turnCompleteTaskUseCase: TurnCompleteTaskUseCase,
-    private val turnCompleteProjectUseCase: TurnCompleteProjectUseCase
-) : ViewModel() {
+    private val _pedigree = MutableLiveData<String>("")
+    val pedigree: LiveData<String> = _pedigree
+
+    val listFolders: LiveData<List<FolderInfo>> = _listFolders
+    val listProjects: LiveData<List<ProjectInfo>> = _listProjects
+    val listTasks: LiveData<List<TaskInfo>> = _listTasks
 
     private val _backClick = MutableLiveData<Boolean?>(null)
     val backClick: LiveData<Boolean?> = _backClick
 
-    private val _editClick = MutableLiveData<Boolean>(false)
-    val editClick: LiveData<Boolean> = _editClick
+    private val _editClick = MutableLiveData<Boolean?>(null)
+    val editClick: LiveData<Boolean?> = _editClick
 
-    private val _elementClickInfo = MutableLiveData<ElementParam?>(null)
-    val elementClickInfo: LiveData<ElementParam?> = _elementClickInfo
+    private val _internalElementClickInfo = MutableLiveData<ElementParam?>(null)
+    val internalElementClickInfo: LiveData<ElementParam?> = _internalElementClickInfo
 
     private val _showDialogDelete = MutableLiveData<Boolean>(false)
     val showDialogDelete: LiveData<Boolean> = _showDialogDelete
 
-    private val _listInternalFolders = MutableLiveData<List<FolderInfo>>(emptyList())
-    val listInternalFolders: LiveData<List<FolderInfo>> = _listInternalFolders
+    override fun initScreen(screenState: ScreenState) {
+        super.initScreen(screenState)
 
-    private val _listInternalProjects = MutableLiveData<List<ProjectInfo>>(emptyList())
-    val listInternalProjects: LiveData<List<ProjectInfo>> = _listInternalProjects
+        initElement(screenState)
+    }
 
-    private val _listInternalTasks = MutableLiveData<List<TaskInfo>>(emptyList())
-    val listInternalTasks: LiveData<List<TaskInfo>> = _listInternalTasks
+    override fun clearScreen() {
+        super.clearScreen()
 
-    private lateinit var job: Job
-
-
-    fun clearScreenState() {
-        _elementClickInfo.value = null
-        _editClick.value = false
-        _showDialogDelete.value = false
         _backClick.value = null
-        closeStates()
-    }
-
-    fun initScreen(screenState: ScreenState) {
-        val screen = getScreen(screenState)
-        screen?.let {
-            val idElement = getIdElementFromArgs(screenState)
-            idElement?.let {
-                job = viewModelScope.launch {
-                    initElement(idElement)
-                    checkAction(screen, this)
-                }
-            }
-        }
-    }
-
-
-    suspend fun getListInternalFolders(param: LocationParam) {
-        val result = getFoldersByLocationUseCase.execute(param)
-        when {
-            result.isSuccess -> {
-                _listInternalFolders.value = result.getOrThrow()
-            }
-
-            result.isFailure -> {}
-        }
-    }
-
-    suspend fun getListInternalProjects(param: LocationParam) {
-        val result = getProjectsByLocationUseCase.execute(param)
-        when {
-            result.isSuccess -> {
-                _listInternalProjects.value = result.getOrThrow()
-            }
-
-            result.isFailure -> {}
-        }
-    }
-
-    suspend fun getListInternalTasks(param: LocationParam) {
-        val result = getTasksByLocationUseCase.execute(param)
-        when {
-            result.isSuccess -> {
-                _listInternalTasks.value = result.getOrThrow()
-            }
-
-            result.isFailure -> {}
-        }
-    }
-
-
-    protected open fun getScreen(screenState: ScreenState): Screen? = null
-    protected open fun getIdElementFromArgs(screenState: ScreenState): Long? = null
-    protected open suspend fun initElement(idElement: Long) {}
-    protected open fun checkAction(screen: Screen, scope: CoroutineScope) {}
-
-
-    protected fun deleteElement(element: ElementInfo) {
-        viewModelScope.launch {
-            val result = deleteElementUseCase.execute(element)
-            when {
-                result.isSuccess -> {
-                    val responseDelete = result.getOrThrow()
-                    Log.d("ttt", "numDeletedFolders = ${responseDelete.numDeletedFolders}")
-                    Log.d("ttt", "numDeletedProjects = ${responseDelete.numDeletedProjects}")
-                    Log.d("ttt", "numDeletedTasks = ${responseDelete.numDeletedTasks}")
-                    handleBack()
-                }
-
-                result.isFailure -> {}
-            }
-        }
-    }
-
-    fun cancelDialogDelete() {
+        _editClick.value = null
+        _internalElementClickInfo.value = null
         _showDialogDelete.value = false
     }
 
-    fun elementClick(type: TypeElement, id: Long) {
-        if (_elementClickInfo.value == null) {
-            _elementClickInfo.value = ElementParam(type, id)
+    /**
+     * Инициализировать текущий элемент, будь то папка, проект или задача
+     */
+    protected open fun initElement(screenState: ScreenState) {
+        val idElement = screenState.currentArgs["ID"]?.toLongOrNull()
+        if (idElement === null) return
+
+        val route = screenState.currentScreen?.route?.rawRoute
+        if (route === null) return
+
+        val typeElement = TypeElement.convert(route)
+        if (typeElement === null) return
+
+        viewModelScope.launch {
+            val element = loadElement(typeElement, idElement)
+            if (element === null) return@launch
+
+            setFormattedPedigree(element.typeLocation, element.idLocation)
+
+            loadInternalElements(typeElement, idElement)
+            _elementInfo.value = element
         }
     }
 
+    /**
+     * Обработка действий TopBar
+     */
+    protected fun handleAction(button: TypeAction) {
+        when (button) {
+            TypeAction.ACTION_NAV_BACK -> handleBack()
+            TypeAction.ACTION_EDIT -> handleEdit()
+            TypeAction.ACTION_DELETE -> handleDelete()
+            else -> Unit
+        }
+    }
+
+
+    /**
+     * Отметить элемент как завершенный
+     */
+    fun markCompleteElement(element: ElementInfo) {
+        viewModelScope.launch {
+            val dateComplete = when (element) {
+                is TaskInfo -> markCompleteTask(element)
+                is ProjectInfo -> if(markCompleteProjectUseCase == null) -1 else markCompleteProject(element)
+                else -> return@launch
+            }
+
+            if (dateComplete?.toInt() == -1) return@launch
+            when (element) {
+                is TaskInfo -> updateListTasksWithMark(element, dateComplete)
+                is ProjectInfo -> updateListProjectsWithMark(element, dateComplete)
+            }
+        }
+    }
+
+    /**
+     * Отмечает задачу как выполненную или, наоборот, снимает отметку.
+     *
+     * @param task Задача
+     *
+     * @return Дату завершения задачи в виде Long. Если была снята отметка, то null. Иначе -1.
+     */
+    private suspend fun markCompleteTask(task: TaskInfo): Long? {
+        val result = markCompleteTaskUseCase(task)
+        when {
+            result.isSuccess -> {
+                return result.getOrThrow()
+            }
+
+            result.isFailure -> {
+            }
+        }
+        return -1
+    }
+
+    /**
+     * Обновляет список задач, выставляя отметку данной задаче или, наоборот, снимая её.
+     *
+     * @param task Целевая задача
+     * @param dateComplete Дата выполнения задачи или null
+     */
+    private fun updateListTasksWithMark(task: TaskInfo, dateComplete: Long?) {
+        val updatedListTasks = _listTasks.value?.map { lTask ->
+            if (lTask.idTask == task.idTask) {
+                lTask.copy(dateCompleted = dateComplete)
+            } else {
+                lTask
+            }
+        } ?: emptyList()
+        _listTasks.value = updatedListTasks
+    }
+
+    /**
+     * Отмечает проект как выполненный или, наоборот, снимает отметку.
+     *
+     * @param project Прроект
+     *
+     * @return Дату завершения проекта в виде Long. Если была снята отметка, то null. Иначе -1.
+     */
+    private suspend fun markCompleteProject(project: ProjectInfo): Long? {
+        val result = markCompleteProjectUseCase!!(project)
+        when {
+            result.isSuccess -> {
+                return result.getOrThrow()
+            }
+
+            result.isFailure -> {
+            }
+        }
+        return -1
+    }
+
+    /**
+     * Обновляет список проектов, выставляя отметку данному проекту или, наоборот, снимая её.
+     *
+     * @param project Целевой проект
+     * @param dateComplete Дата выполнения проекта или null
+     */
+    private fun updateListProjectsWithMark(project: ProjectInfo, dateComplete: Long?) {
+        val updatedListProjects = _listProjects.value?.map { lProject ->
+            if (lProject.idProject == project.idProject) {
+                lProject.copy(dateCompleted = dateComplete)
+            } else {
+                lProject
+            }
+        } ?: emptyList()
+        _listProjects.value = updatedListProjects
+    }
+
+    /**
+     * Удалить текущий элемент
+     */
+    fun deleteCurrentElement() {
+        if (_showDialogDelete.value == false) return
+
+        cancelDialogDelete()
+
+        if (_elementInfo.value == null) return
+
+        if(deleteElementUseCase == null) return
+
+        viewModelScope.launch {
+            if(deleteElement(_elementInfo.value!!))
+                handleBack()
+        }
+    }
+
+    /**
+     * Удаляет элемент (папку, проект, задачу) из базы данных
+     *
+     * @param element Целевой элемент для удаления
+     *
+     * @return true если элемент успешно удалён, иначе false
+     */
+    private suspend fun deleteElement(element: ElementInfo): Boolean {
+        val result = deleteElementUseCase!!(element)
+        when {
+            result.isSuccess -> {
+                val responseDelete = result.getOrThrow()
+                Log.d("ttt", "numDeletedFolders = ${responseDelete.numDeletedFolders}")
+                Log.d("ttt", "numDeletedProjects = ${responseDelete.numDeletedProjects}")
+                Log.d("ttt", "numDeletedTasks = ${responseDelete.numDeletedTasks}")
+                return true
+            }
+
+            result.isFailure -> {
+            }
+        }
+        return false
+    }
+
+
+    /**
+     * Обработка действия "назад" из TopBar
+     */
     fun handleBack() {
         _backClick.value = _backClick.value?.not() ?: true
     }
 
-    protected fun handleEdit() {
+    /**
+     * Обработка действия "редактировать" из TopBar
+     */
+    private fun handleEdit() {
         _editClick.value = true
     }
 
-    protected fun handleDelete() {
+    /**
+     * Обработка действия "удалить" из TopBar
+     */
+    private fun handleDelete() {
         _showDialogDelete.value = true
     }
 
-    private fun closeStates() {
-        job.cancel()
+    /**
+     * Закрыть окно удаления
+     */
+    fun cancelDialogDelete() {
+        _showDialogDelete.value = false
     }
 
-    fun elementMainClick(element: ElementInfo) {
-        when (element) {
-            is TaskInfo -> {
-                handleCompleteTask(element)
-            }
-            is ProjectInfo -> {
-                handleCompleteProject(element)
-            }
-            else -> {}
+    /**
+     * Обработка клика по внутреннему элементу
+     */
+    fun elementClick(typeElement: TypeElement, idElement: Long) {
+        if (_internalElementClickInfo.value == null) {
+            _internalElementClickInfo.value = ElementParam(typeElement, idElement)
         }
     }
 
+    /**
+     * Получить иерархический список названий элементов расположения данного элемента
+     */
+    private suspend fun getPedigreeLocations(typeLocation: TypeLocation, idLocation: Long): List<String> {
+        val param = LocationParam(typeLocation, idLocation)
+        val result = getNamesFullLocationElementUseCase!!(param)
+        when {
+            result.isSuccess -> {
+                return result.getOrThrow()
+            }
 
-    private fun handleCompleteTask(task: TaskInfo) {
-        viewModelScope.launch {
-            val result = turnCompleteTaskUseCase.execute(task)
-            when {
-                result.isSuccess -> {
-                    val newDateCompleted = result.getOrNull()
-                    val updatedListTasks = _listInternalTasks.value?.map { lTask ->
-                        if (lTask.idTask == task.idTask) {
-                            lTask.copy(dateCompleted = newDateCompleted)
-                        } else {
-                            lTask
-                        }
-                    } ?: emptyList()
-                    _listInternalTasks.value = updatedListTasks
-                }
-
-                result.isFailure -> {}
+            result.isFailure -> {
             }
         }
+        return emptyList()
     }
 
-    private fun handleCompleteProject(project: ProjectInfo) {
-        viewModelScope.launch {
-            val result = turnCompleteProjectUseCase.execute(project)
-            when {
-                result.isSuccess -> {
-                    val newDateCompleted = result.getOrNull()
-                    val updatedListTasks = _listInternalProjects.value?.map { lProject ->
-                        if(lProject.idProject == project.idProject) {
-                            lProject.copy(dateCompleted = newDateCompleted)
-                        } else {
-                            lProject
-                        }
-                    } ?: emptyList()
-                    _listInternalProjects.value = updatedListTasks
-                }
-                result.isFailure -> {}
-            }
-        }
+    /**
+     * Превратить список локаций в образцовую строку
+     */
+    private suspend fun setFormattedPedigree(typeLocation: TypeLocation, idLocation: Long) {
+        if(getNamesFullLocationElementUseCase == null) return
+
+        val locations = getPedigreeLocations(typeLocation, idLocation)
+        _pedigree.value = locations.joinToString(separator = " > ")
     }
 }

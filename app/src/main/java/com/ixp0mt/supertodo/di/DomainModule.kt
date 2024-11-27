@@ -17,9 +17,9 @@ import com.ixp0mt.supertodo.domain.usecase.project.SaveEditProjectUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.SaveEditTaskUseCase
 import com.ixp0mt.supertodo.domain.usecase.folder.SaveNewFolderUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.SaveNewProjectUseCase
-import com.ixp0mt.supertodo.domain.usecase.project.TurnCompleteProjectUseCase
+import com.ixp0mt.supertodo.domain.usecase.project.MarkCompleteProjectUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.SaveNewTaskUseCase
-import com.ixp0mt.supertodo.domain.usecase.task.TurnCompleteTaskUseCase
+import com.ixp0mt.supertodo.domain.usecase.task.MarkCompleteTaskUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -106,13 +106,13 @@ class DomainModule {
     }
 
     @Provides
-    fun provideTurnCompleteTaskUseCase(taskRepository: TaskRepository): TurnCompleteTaskUseCase {
-        return TurnCompleteTaskUseCase(taskRepository)
+    fun provideTurnCompleteTaskUseCase(taskRepository: TaskRepository): MarkCompleteTaskUseCase {
+        return MarkCompleteTaskUseCase(taskRepository)
     }
 
     @Provides
-    fun provideTurnCompleteProjectUseCase(projectRepository: ProjectRepository): TurnCompleteProjectUseCase {
-        return TurnCompleteProjectUseCase(projectRepository)
+    fun provideTurnCompleteProjectUseCase(projectRepository: ProjectRepository): MarkCompleteProjectUseCase {
+        return MarkCompleteProjectUseCase(projectRepository)
     }
 
     @Provides

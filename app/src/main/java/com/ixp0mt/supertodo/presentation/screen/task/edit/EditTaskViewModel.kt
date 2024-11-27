@@ -100,7 +100,7 @@ class EditTaskViewModel @Inject constructor(
 
     private suspend fun getTaskInfo(idTask: Long): Boolean {
         val param = GetTaskByIdParam(idTask)
-        val result = getTaskByIdUseCase.execute(param)
+        val result = getTaskByIdUseCase(param)
         when {
             result.isSuccess -> {
                 _taskInfo.value = result.getOrThrow()

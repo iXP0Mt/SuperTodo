@@ -6,7 +6,7 @@ import com.ixp0mt.supertodo.domain.model.LocationParam
 import com.ixp0mt.supertodo.domain.repository.FolderRepository
 
 class GetFoldersByLocationUseCase(private val folderRepository: FolderRepository) {
-    suspend fun execute(param: LocationParam): Result<List<FolderInfo>> {
+    suspend operator fun invoke(param: LocationParam): Result<List<FolderInfo>> {
         return try {
             val response =
                 if(param.idLocation == 0L) folderRepository.getByTypeLocation(

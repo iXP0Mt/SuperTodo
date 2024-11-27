@@ -164,7 +164,7 @@ class ChangeLocationViewModel @Inject constructor(
     }*/
 
     private suspend fun getListInternalFolders(param: LocationParam) {
-        val result = getFoldersByLocationUseCase.execute(param)
+        val result = getFoldersByLocationUseCase(param)
         when {
             result.isSuccess -> {
                 val tempList = result.getOrThrow()
@@ -190,7 +190,7 @@ class ChangeLocationViewModel @Inject constructor(
     }
 
     private suspend fun getListInternalProjects(param: LocationParam) {
-        val result = getProjectsByLocationUseCase.execute(param)
+        val result = getProjectsByLocationUseCase(param)
         when {
             result.isSuccess -> {
                 val tempList = result.getOrThrow()
@@ -216,7 +216,7 @@ class ChangeLocationViewModel @Inject constructor(
     }
 
     private suspend fun getListInternalTasks(param: LocationParam) {
-        val result = getTasksByLocationUseCase.execute(param)
+        val result = getTasksByLocationUseCase(param)
         when {
             result.isSuccess -> {
                 val tempList = result.getOrThrow()

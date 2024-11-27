@@ -4,8 +4,15 @@ import com.ixp0mt.supertodo.domain.model.SetCompleteParam
 import com.ixp0mt.supertodo.domain.model.TaskInfo
 import com.ixp0mt.supertodo.domain.repository.TaskRepository
 
-class TurnCompleteTaskUseCase(private val taskRepository: TaskRepository) {
-    suspend fun execute(task: TaskInfo): Result<Long?> {
+class MarkCompleteTaskUseCase(private val taskRepository: TaskRepository) {
+    /**
+     * Отметить задачу выполненной или, наоборот, снять метку.
+     *
+     * @param task Задача
+     *
+     * @return Объект Result<Long>, который возвращает результат с датой завершения задачи в виде Long или, если метка, наоборот, снята, null
+     */
+    suspend operator fun invoke(task: TaskInfo): Result<Long?> {
         return try {
 
             val newDateCompleted: Long?

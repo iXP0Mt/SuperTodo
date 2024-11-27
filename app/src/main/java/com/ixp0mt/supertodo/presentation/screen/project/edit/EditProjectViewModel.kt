@@ -70,7 +70,7 @@ class EditProjectViewModel @Inject constructor(
 
     private suspend fun getProjectInfo(idProject: Long): Boolean {
         val params = GetProjectByIdParam(idProject)
-        val result = getProjectByIdUseCase.execute(params)
+        val result = getProjectByIdUseCase(params)
         when {
             result.isSuccess -> {
                 _projectInfo.value = result.getOrThrow()

@@ -1,6 +1,7 @@
 package com.ixp0mt.supertodo.domain.util
 
 enum class TypeElement {
+    MAIN,
     FOLDER,
     PROJECT,
     TASK;

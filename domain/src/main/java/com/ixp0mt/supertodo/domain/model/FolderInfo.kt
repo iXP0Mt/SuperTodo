@@ -5,9 +5,9 @@ import com.ixp0mt.supertodo.domain.util.TypeLocation
 data class FolderInfo(
     val idFolder: Long,
     override val name: String,
-    val description: String?,
+    override val description: String?,
     override val typeLocation: TypeLocation,
-    override val idLocation: Long?,
+    override val idLocation: Long,
     val dateCreate: Long,
     val dateEdit: Long? = null,
     val dateArchive: Long? = null
@@ -19,7 +19,7 @@ data class FolderInfo(
                 name = "",
                 description = "",
                 typeLocation = TypeLocation.MAIN,
-                idLocation = null,
+                idLocation = 0,
                 dateCreate = 0,
                 dateEdit = null,
                 dateArchive = null
@@ -32,7 +32,7 @@ data class FolderInfo(
                 name = "Главная папка",
                 description = null,
                 typeLocation = TypeLocation.MAIN,
-                idLocation = null,
+                idLocation = 0,
                 dateCreate = 0,
                 dateEdit = null,
                 dateArchive = null

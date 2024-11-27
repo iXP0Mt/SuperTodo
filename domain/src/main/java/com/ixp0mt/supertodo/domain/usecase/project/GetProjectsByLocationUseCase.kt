@@ -7,7 +7,7 @@ import com.ixp0mt.supertodo.domain.model.ProjectInfo
 import com.ixp0mt.supertodo.domain.repository.ProjectRepository
 
 class GetProjectsByLocationUseCase(private val projectRepository: ProjectRepository) {
-    suspend fun execute(param: LocationParam): Result<List<ProjectInfo>> {
+    suspend operator fun invoke(param: LocationParam): Result<List<ProjectInfo>> {
         return try {
             val response =
                 if(param.idLocation == 0L) projectRepository.getByTypeLocation(

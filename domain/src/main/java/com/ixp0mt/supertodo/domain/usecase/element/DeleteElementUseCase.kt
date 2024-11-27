@@ -20,14 +20,10 @@ class DeleteElementUseCase(
     private var numDeletedProjects = 0
     private var numDeletedTasks = 0
 
-    //suspend fun execute(folder: FolderInfo): Result<ResponseDelete> = getResult { deleteFolder(folder) }
-    //suspend fun execute(project: ProjectInfo): Result<ResponseDelete> = getResult { deleteProject(project) }
-    //suspend fun execute(task: TaskInfo): Result<ResponseDelete> = getResult { deleteTask(task) }
-    suspend fun execute(element: ElementInfo): Result<ResponseDelete> = getResult { deleteElement(element) }
 
-    private suspend fun getResult(deleteAction: suspend () -> Unit): Result<ResponseDelete> {
+    suspend operator fun invoke(element: ElementInfo): Result<ResponseDelete> {
         return try {
-            deleteAction()
+            deleteElement(element)
             val responseDelete = ResponseDelete(
                 numDeletedFolders = numDeletedFolders.takeIf { it > 0 },
                 numDeletedProjects = numDeletedProjects.takeIf { it > 0 },

@@ -5,7 +5,7 @@ import com.ixp0mt.supertodo.domain.model.GetFolderByIdParam
 import com.ixp0mt.supertodo.domain.repository.FolderRepository
 
 class GetFolderByIdUseCase(private val folderRepository: FolderRepository) {
-    suspend fun execute(params: GetFolderByIdParam): Result<FolderInfo> {
+    suspend operator fun invoke(params: GetFolderByIdParam): Result<FolderInfo> {
         return try {
             val response = folderRepository.getById(params)
             Result.success(response)

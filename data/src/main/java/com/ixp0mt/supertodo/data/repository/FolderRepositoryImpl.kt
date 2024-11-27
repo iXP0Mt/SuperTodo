@@ -73,7 +73,7 @@ class FolderRepositoryImpl(private val database: Database) : FolderRepository {
                 name = it.name,
                 description = it.description,
                 typeLocation = it.typeLocation,
-                idLocation = it.idLocation,
+                idLocation = it.idLocation ?: 0,
                 dateCreate = it.dateCreate,
                 dateEdit = it.dateEdit,
                 dateArchive = it.dateArchive
@@ -87,7 +87,7 @@ class FolderRepositoryImpl(private val database: Database) : FolderRepository {
             name = this.name,
             description = this.description,
             typeLocation = this.typeLocation,
-            idLocation = this.idLocation,
+            idLocation = this.idLocation ?: 0,
             dateCreate = this.dateCreate,
             dateEdit = this.dateEdit,
             dateArchive = this.dateArchive

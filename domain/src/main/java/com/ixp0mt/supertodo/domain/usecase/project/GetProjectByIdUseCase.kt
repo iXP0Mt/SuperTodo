@@ -5,7 +5,7 @@ import com.ixp0mt.supertodo.domain.model.ProjectInfo
 import com.ixp0mt.supertodo.domain.repository.ProjectRepository
 
 class GetProjectByIdUseCase(private val projectRepository: ProjectRepository) {
-    suspend fun execute(param: GetProjectByIdParam): Result<ProjectInfo> {
+    suspend operator fun invoke(param: GetProjectByIdParam): Result<ProjectInfo> {
         return try {
             val response = projectRepository.getById(param)
             Result.success(response)

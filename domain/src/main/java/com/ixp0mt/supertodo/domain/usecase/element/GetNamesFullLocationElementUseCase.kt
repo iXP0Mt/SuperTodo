@@ -17,7 +17,7 @@ class GetNamesFullLocationElementUseCase(
 ) {
     private lateinit var listNamesLocations: MutableList<String>
 
-    suspend fun execute(param: LocationParam): Result<List<String>> {
+    suspend operator fun invoke(param: LocationParam): Result<List<String>> {
         return try {
             listNamesLocations = mutableListOf()
             handleListLocations(param)

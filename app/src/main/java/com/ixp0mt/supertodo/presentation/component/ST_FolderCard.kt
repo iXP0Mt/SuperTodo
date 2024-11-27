@@ -2,16 +2,13 @@ package com.ixp0mt.supertodo.presentation.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +25,7 @@ import com.ixp0mt.supertodo.domain.model.FolderInfo
 @Composable
 fun ST_FolderCard(
     item: FolderInfo,
-    onClick: () -> Unit
+    onElementClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -43,7 +40,7 @@ fun ST_FolderCard(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .clickable { onClick() },
+                .clickable { onElementClick() },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(

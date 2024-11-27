@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ixp0mt.supertodo.domain.model.ElementParam
 import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
 import com.ixp0mt.supertodo.domain.util.TypeElement
 import com.ixp0mt.supertodo.presentation.component.ST_ElementInfo
@@ -28,9 +29,18 @@ fun TaskScreen(
     screenState: ScreenState,
     onBackClick: () -> Unit,
     onEditClick: () -> Unit,
-    onElementClick: (typeElement: TypeElement, idElement: Long) -> Unit
+    onElementClick: (ElementParam) -> Unit
 ) {
-    val taskInfo by viewModel.taskInfo.observeAsState()
+
+    ElementScreen(
+        viewModel = viewModel,
+        screenState = screenState,
+        onElementClick = onElementClick,
+        onBackClick = onBackClick,
+        onEditClick = onEditClick
+    )
+
+    /*val taskInfo by viewModel.taskInfo.observeAsState()
     val listPedigree by viewModel.listPedigree.observeAsState()
 
     Column(
@@ -51,5 +61,5 @@ fun TaskScreen(
             onElementClick = { onElementClick(it.typeElement, it.idElement) },
             onDeleteElement = { viewModel.deleteCurrentElement() }
         )
-    }
+    }*/
 }

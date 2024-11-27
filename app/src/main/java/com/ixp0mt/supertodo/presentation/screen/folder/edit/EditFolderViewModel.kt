@@ -79,7 +79,7 @@ class EditFolderViewModel @Inject constructor(
 
     private suspend fun getFolderInfo(idFolder: Long): Boolean {
         val params = GetFolderByIdParam(idFolder)
-        val result = getFolderByIdUseCase.execute(params)
+        val result = getFolderByIdUseCase(params)
         when {
             result.isSuccess -> {
                 _folderInfo.value = result.getOrThrow()

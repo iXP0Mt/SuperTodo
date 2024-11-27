@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 fun ST_ElementInfo(
     name: String,
     description: String?,
-    listPedigree: List<String>
+    strPedigree: String
 ) {
     Box(
         modifier = Modifier
@@ -52,7 +52,7 @@ fun ST_ElementInfo(
                     color = MaterialTheme.colorScheme.onSurface.copy(0.5f)
                 )
                 Text(
-                    text = listPedigree.joinToString(separator = " > "),
+                    text = strPedigree,
                     style = MaterialTheme.typography.bodyMedium
                 )
             }

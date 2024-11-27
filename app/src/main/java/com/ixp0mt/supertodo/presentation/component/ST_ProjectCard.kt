@@ -1,13 +1,10 @@
 package com.ixp0mt.supertodo.presentation.component
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -30,8 +27,8 @@ import com.ixp0mt.supertodo.domain.model.ProjectInfo
 @Composable
 fun ST_ProjectCard(
     item: ProjectInfo,
-    onClickMain: () -> Unit,
-    onClickExtend: () -> Unit
+    onSpecialClick: () -> Unit,
+    onElementClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -50,7 +47,7 @@ fun ST_ProjectCard(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .clickable { onClickExtend() },
+                .clickable { onElementClick() },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
@@ -60,7 +57,7 @@ fun ST_ProjectCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
-                    onClick = { onClickMain() }
+                    onClick = { onSpecialClick() }
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_project),

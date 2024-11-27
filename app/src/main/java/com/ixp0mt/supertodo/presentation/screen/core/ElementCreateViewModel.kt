@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 open class ElementCreateViewModel : ViewModel() {
 
-    protected val _idLocationSource = MutableLiveData<Long>()
+    protected val _idLocationSource = MutableLiveData<Long>(0)
     val idLocationSource: LiveData<Long> = _idLocationSource
 
     protected val _typeLocationSource = MutableLiveData<TypeLocation>()
