@@ -263,7 +263,7 @@ class ChangeLocationViewModel @Inject constructor(
 
     fun elementClick(type: TypeElement, id: Long) {
         if (_elementClickInfo.value == null) {
-            _elementClickInfo.value = LocationParam(TypeLocation.convert(type.name), id)
+            _elementClickInfo.value = LocationParam(TypeLocation.convert(type.name)!!, id)
         }
     }
 

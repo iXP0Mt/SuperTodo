@@ -19,9 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ixp0mt.supertodo.domain.model.ElementParam
 import com.ixp0mt.supertodo.presentation.component.ST_TextField
 import com.ixp0mt.supertodo.presentation.component.showSnackbar
 import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
+import com.ixp0mt.supertodo.presentation.screen.core.CreateElementScreen
 import kotlinx.coroutines.delay
 
 @Composable
@@ -29,69 +31,16 @@ fun CreateProjectScreen(
     viewModel: CreateProjectViewModel = hiltViewModel(),
     screenState: ScreenState,
     snackbarHostState: SnackbarHostState,
-    onSuccessSave: (idProject: Long) -> Unit,
+    onSuccessSave: (ElementParam) -> Unit,
     onBackClick: () -> Unit
 ) {
-    val scope = rememberCoroutineScope()
-
-    val focusRequester = remember { FocusRequester() }
-    val keyboard = LocalSoftwareKeyboardController.current
-
-    DisposableEffect(Unit) {
-        viewModel.initScreen(screenState)
-        onDispose { viewModel.clearScreenState() }
-    }
-
-    val backClick by viewModel.backClick.observeAsState()
-    val idNewProject by viewModel.idNewProject.observeAsState()
-    val errorMsg by viewModel.errorMsg.observeAsState()
-    val showKeyboard by viewModel.showKeyboard.observeAsState()
-
-    val nameProject by viewModel.nameProject.observeAsState()
-    val description by viewModel.description.observeAsState()
-
-    BackHandler { viewModel.handleBack() }
-    LaunchedEffect(backClick) { backClick?.let { onBackClick() } }
-    LaunchedEffect(idNewProject) { idNewProject?.let(onSuccessSave) }
-    LaunchedEffect(errorMsg) {
-        errorMsg?.let {
-            showSnackbar(snackbarHostState, scope, it)
-            viewModel.clearErrorMsg()
-        }
-    }
-    LaunchedEffect(showKeyboard) {
-        if(showKeyboard!!) {
-            focusRequester.requestFocus()
-            delay(100)
-            keyboard?.show()
-        } else {
-            keyboard?.hide()
-        }
-    }
-
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            ST_TextField(
-                value = nameProject!!,
-                onValueChange = { viewModel.changeNameProject(it) },
-                placeholderText = "Название проекта",
-                focusRequester = focusRequester
-            )
-
-            ST_TextField(
-                value = description!!,
-                onValueChange = { viewModel.changeDescription(it) },
-                placeholderText = "Описание проекта"
-            )
-        }
-    }
+    CreateElementScreen(
+        viewModel = viewModel,
+        screenState = screenState,
+        snackbarHostState = snackbarHostState,
+        onSuccessSave = onSuccessSave,
+        onBackClick = onBackClick,
+        placeholder1 = "Название проекта",
+        placeholder2 = "Описание проекта"
+    )
 }

@@ -75,11 +75,11 @@ fun AppNavHost(
             CreateFolderScreen(
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
-                onSuccessSave = { idFolder ->
+                onSuccessSave = {
                     navigateToElementScreen(
                         navHostController = navHostController,
                         typeElement = TypeElement.FOLDER,
-                        idElement = idFolder,
+                        idElement = it.idElement,
                         clearPreviousRoute = Routes.FolderCreate.fullRoute
                     )
                 },
@@ -116,11 +116,11 @@ fun AppNavHost(
             CreateProjectScreen(
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
-                onSuccessSave = { idProject ->
+                onSuccessSave = {
                     navigateToElementScreen(
                         navHostController = navHostController,
                         typeElement = TypeElement.PROJECT,
-                        idElement = idProject,
+                        idElement = it.idElement,
                         clearPreviousRoute = Routes.ProjectCreate.fullRoute
                     )
                 },
@@ -150,11 +150,11 @@ fun AppNavHost(
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
                 onBackClick = { navHostController.navigateBack() },
-                onSuccessSave = { idTask ->
+                onSuccessSave = {
                     navigateToElementScreen(
                         navHostController = navHostController,
                         typeElement = TypeElement.TASK,
-                        idElement = idTask,
+                        idElement = it.idElement,
                         clearPreviousRoute = Routes.TaskCreate.fullRoute
                     )
                 }

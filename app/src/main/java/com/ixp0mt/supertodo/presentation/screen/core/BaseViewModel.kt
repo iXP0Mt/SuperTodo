@@ -78,7 +78,7 @@ abstract class BaseViewModel(
      * @param idElement ID элемента
      */
     private suspend fun loadInternalFolders(typeElement: TypeElement, idElement: Long) {
-        val param = LocationParam(TypeLocation.convert(typeElement.name), idElement)
+        val param = LocationParam(TypeLocation.convert(typeElement.name)!!, idElement)
         val result = getFoldersByLocationUseCase!!(param)
         when {
             result.isSuccess -> {
@@ -97,7 +97,7 @@ abstract class BaseViewModel(
      * @param idElement ID элемента
      */
     private suspend fun loadInternalProjects(typeElement: TypeElement, idElement: Long) {
-        val param = LocationParam(TypeLocation.convert(typeElement.name), idElement)
+        val param = LocationParam(TypeLocation.convert(typeElement.name)!!, idElement)
         val result = getProjectsByLocationUseCase!!(param)
         when {
             result.isSuccess -> {
@@ -116,7 +116,7 @@ abstract class BaseViewModel(
      * @param idElement ID элемента
      */
     private suspend fun loadInternalTasks(typeElement: TypeElement, idElement: Long) {
-        val param = LocationParam(TypeLocation.convert(typeElement.name), idElement)
+        val param = LocationParam(TypeLocation.convert(typeElement.name)!!, idElement)
         val result = getTasksByLocationUseCase!!(param)
         when {
             result.isSuccess -> {
@@ -218,8 +218,6 @@ abstract class BaseViewModel(
      * Предоставляет экран для базового класса ViewModel
      */
     protected abstract fun provideScreen(screenState: ScreenState): Screen
-
-    //protected abstract fun provideElement()
 
     protected abstract fun provideActions(screen: Screen, scope: CoroutineScope)
 }
