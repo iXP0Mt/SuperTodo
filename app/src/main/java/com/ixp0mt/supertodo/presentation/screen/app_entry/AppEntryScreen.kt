@@ -14,7 +14,6 @@ import com.ixp0mt.supertodo.presentation.navigation.top.TopBar
 
 @Composable
 fun AppEntryScreen(
-    viewModel: AppEntryViewModel,
     screenState: ScreenState,
     bottomBarViewModel: BottomBarViewModel,
     navHostController: NavHostController,

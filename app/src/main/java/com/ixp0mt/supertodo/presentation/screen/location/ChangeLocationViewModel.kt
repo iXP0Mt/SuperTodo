@@ -135,7 +135,7 @@ class ChangeLocationViewModel @Inject constructor(
 
     private suspend fun getElementByLocation(typeLocation: TypeLocation, idLocation: Long) {
         val param = LocationParam(typeLocation, idLocation)
-        val result = getElementByLocationUseCase.execute(param)
+        val result = getElementByLocationUseCase(param)
         when {
             result.isSuccess -> {
                 _elementOfLocation.value = result.getOrThrow()

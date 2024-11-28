@@ -16,7 +16,7 @@ class GetElementByLocationUseCase(
     private val projectRepository: ProjectRepository,
     private val taskRepository: TaskRepository
 ) {
-    suspend fun execute(param: LocationParam): Result<ElementInfo> {
+    suspend operator fun invoke(param: LocationParam): Result<ElementInfo> {
         return try {
             val element = getElement(param)
             Result.success(element)
@@ -33,6 +33,4 @@ class GetElementByLocationUseCase(
             TypeLocation.MAIN -> FolderInfo.main()
         }
     }
-
-
 }

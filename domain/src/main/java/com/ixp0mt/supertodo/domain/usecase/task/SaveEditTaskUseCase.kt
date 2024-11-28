@@ -4,7 +4,7 @@ import com.ixp0mt.supertodo.domain.model.TaskInfo
 import com.ixp0mt.supertodo.domain.repository.TaskRepository
 
 class SaveEditTaskUseCase(private val taskRepository: TaskRepository) {
-    suspend fun execute(task: TaskInfo): Result<Int> {
+    suspend operator fun invoke(task: TaskInfo): Result<Int> {
         return try {
             val validTask = task.copy(name = task.name.trim())
             val response = taskRepository.saveEdit(validTask)

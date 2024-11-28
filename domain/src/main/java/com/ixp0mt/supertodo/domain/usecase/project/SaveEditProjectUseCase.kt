@@ -4,7 +4,7 @@ import com.ixp0mt.supertodo.domain.model.ProjectInfo
 import com.ixp0mt.supertodo.domain.repository.ProjectRepository
 
 class SaveEditProjectUseCase(private val projectRepository: ProjectRepository) {
-    suspend fun execute(project: ProjectInfo): Result<Int> {
+    suspend operator fun invoke(project: ProjectInfo): Result<Int> {
         return try {
             val validProject = project.copy(name = project.name.trim())
             val response = projectRepository.saveEdit(validProject)

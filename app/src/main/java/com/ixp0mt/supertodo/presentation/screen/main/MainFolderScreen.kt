@@ -10,7 +10,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ixp0mt.supertodo.domain.model.ElementParam
-import com.ixp0mt.supertodo.domain.util.TypeElement
 import com.ixp0mt.supertodo.presentation.component.ST_ListElement
 import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
 

@@ -92,9 +92,8 @@ fun AppNavHost(
             EditFolderScreen(
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
-                onBackClick = {
-                    navHostController.navigateBack()
-                }
+                onBackClick = { navHostController.navigateBack() },
+                onLocationClick = { navHostController.navigate(Routes.ChangeLocation(it.typeLocation, it.idLocation)) }
             )
         }
 
@@ -131,7 +130,8 @@ fun AppNavHost(
             EditProjectScreen(
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
-                onBackClick = { navHostController.navigateBack() }
+                onBackClick = { navHostController.navigateBack() },
+                onLocationClick = { navHostController.navigate(Routes.ChangeLocation(it.typeLocation, it.idLocation)) }
             )
         }
         composable(Routes.Task.fullRoute) {
@@ -165,9 +165,7 @@ fun AppNavHost(
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
                 onBackClick = { navHostController.navigateBack() },
-                onLocationClick = { typeLocation, idLocation ->
-                    navHostController.navigate(Routes.ChangeLocation(typeLocation, idLocation))
-                }
+                onLocationClick = { navHostController.navigate(Routes.ChangeLocation(it.typeLocation, it.idLocation)) }
             )
         }
 
