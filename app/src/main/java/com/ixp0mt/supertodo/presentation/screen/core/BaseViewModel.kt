@@ -3,6 +3,7 @@ package com.ixp0mt.supertodo.presentation.screen.core
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ixp0mt.supertodo.R
 import com.ixp0mt.supertodo.domain.model.ElementInfo
 import com.ixp0mt.supertodo.domain.model.FolderInfo
 import com.ixp0mt.supertodo.domain.model.GetFolderByIdParam
@@ -63,11 +64,13 @@ abstract class BaseViewModel(
      *
      * @param typeElement Для какого типа элемента загружать содержимое
      * @param idElement Для какого ID элемента загружать содержимое
+     * @param flags Флаги в двоичном представлении для настройки какие типы внутренних элементов подгружать:
+     *              папки (x), проекты (y), задачи (z) - 0bxyz, где вместо символов (x,y,z) надо выставить 0 или 1
      */
-    protected suspend fun loadInternalElements(typeElement: TypeElement, idElement: Long) {
-        getFoldersByLocationUseCase?.let { loadInternalFolders(typeElement, idElement) }
-        getProjectsByLocationUseCase?.let { loadInternalProjects(typeElement, idElement) }
-        getTasksByLocationUseCase?.let { loadInternalTasks(typeElement, idElement) }
+    protected suspend fun loadInternalElements(typeElement: TypeElement, idElement: Long, flags: Int = 0b111) {
+        if((flags and 0b100) == 0b100) getFoldersByLocationUseCase?.let { loadInternalFolders(typeElement, idElement) }
+        if((flags and 0b010) == 0b010) getProjectsByLocationUseCase?.let { loadInternalProjects(typeElement, idElement) }
+        if((flags and 0b001) == 0b001) getTasksByLocationUseCase?.let { loadInternalTasks(typeElement, idElement) }
     }
 
 
@@ -212,6 +215,23 @@ abstract class BaseViewModel(
      */
     fun handleElement() {
 
+    }
+
+    /**
+     * Получить ID иконки элемента-локации по типу локации
+     *
+     * @param typeLocation Тип локации
+     *
+     * @return Drawable Int ID иконки
+     */
+    protected fun getIconIdLocation(typeLocation: TypeLocation): Int {
+        return when(typeLocation) {
+            TypeLocation.FOLDER -> R.drawable.ic_folder
+            TypeLocation.PROJECT -> R.drawable.ic_project
+            TypeLocation.TASK -> R.drawable.ic_task
+            TypeLocation.MAIN -> R.drawable.ic_home
+            else -> R.drawable.baseline_delete_forever_24
+        }
     }
 
     /**

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -27,18 +26,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ixp0mt.supertodo.R
-import com.ixp0mt.supertodo.domain.model.ElementParam
 import com.ixp0mt.supertodo.domain.model.LocationParam
 import com.ixp0mt.supertodo.domain.util.TypeElement
-import com.ixp0mt.supertodo.domain.util.TypeLocation
 import com.ixp0mt.supertodo.presentation.component.ST_FolderCardSimple
 import com.ixp0mt.supertodo.presentation.component.ST_ProjectCardSimple
 import com.ixp0mt.supertodo.presentation.component.ST_TaskCardSimple
@@ -54,19 +48,21 @@ fun ChangeLocationScreen(
 ) {
     DisposableEffect(Unit) {
         viewModel.initScreen(screenState)
-        onDispose { viewModel.clearScreenState() }
+        onDispose { viewModel.clearScreen() }
     }
 
     val backClick by viewModel.backClick.observeAsState()
     val saveClickInfo by viewModel.saveClickInfo.observeAsState()
     val elementClickInfo by viewModel.elementClickInfo.observeAsState()
 
-    val listInternalFolders by viewModel.listInternalFolders.observeAsState()
-    val listInternalProjects by viewModel.listInternalProjects.observeAsState()
-    val listInternalTasks by viewModel.listInternalTasks.observeAsState()
+    val listInternalFolders by viewModel.listFolders.observeAsState()
+    val listInternalProjects by viewModel.listProjects.observeAsState()
+    val listInternalTasks by viewModel.listTasks.observeAsState()
 
     val elementOfLocation by viewModel.elementOfLocation.observeAsState()
     val showBackLocation by viewModel.showBackLocation.observeAsState()
+
+    val idIcon by viewModel.idIcon.observeAsState()
 
     BackHandler { viewModel.handleBack() }
     LaunchedEffect(backClick) { backClick?.let { onBackClick() } }
@@ -87,20 +83,22 @@ fun ChangeLocationScreen(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            viewModel.getIconLocation()?.let {
+            idIcon?.let {
                 Icon(
                     modifier = Modifier.size(25.dp),
                     imageVector = ImageVector.vectorResource(id = it),
                     contentDescription = null
                 )
             }
-            Text(text = elementOfLocation!!.name)
+            elementOfLocation?.let {
+                Text(text = it.name)
+            }
         }
 
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
-            if(showBackLocation!!) {
+            if (showBackLocation!!) {
                 item {
                     Card(
                         modifier = Modifier

@@ -3,7 +3,6 @@ package com.ixp0mt.supertodo.presentation.screen.core
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.ixp0mt.supertodo.R
 import com.ixp0mt.supertodo.domain.model.ElementInfo
 import com.ixp0mt.supertodo.domain.model.FolderInfo
 import com.ixp0mt.supertodo.domain.model.LocationParam
@@ -104,25 +103,23 @@ abstract class EditElementViewModel(
             _textElement.value = element.name
             _descElement.value = element.description
 
-            if(!tryInitLocationFromSavedStateHandle(screenState)) {
-                _locationInfo.value = LocationParam(element.typeLocation, element.idLocation)
-            }
+            val location = getLocationFromSavedStateHandle(screenState)
+            _locationInfo.value = location ?: LocationParam(element.typeLocation, element.idLocation)
 
             _locationName.value = getNameLocation(_locationInfo.value!!.typeLocation, _locationInfo.value!!.idLocation)
             _idIcon.value = getIconIdLocation(_locationInfo.value!!.typeLocation)
         }
     }
 
-    private fun tryInitLocationFromSavedStateHandle(screenState: ScreenState): Boolean {
+    private fun getLocationFromSavedStateHandle(screenState: ScreenState): LocationParam? {
         val typeLocation: TypeLocation? = screenState.savedStateHandle["typeLocation"]
         val idLocation: Long? = screenState.savedStateHandle["idLocation"]
 
         if (typeLocation != null && idLocation != null) {
-            _locationInfo.value = LocationParam(typeLocation, idLocation)
-            return true
+            return LocationParam(typeLocation, idLocation)
         }
 
-        return false
+        return null
     }
 
     /**
@@ -321,16 +318,6 @@ abstract class EditElementViewModel(
             }
         }
         return null
-    }
-
-    private fun getIconIdLocation(typeLocation: TypeLocation): Int {
-        return when(typeLocation) {
-            TypeLocation.FOLDER -> R.drawable.ic_folder
-            TypeLocation.PROJECT -> R.drawable.ic_project
-            TypeLocation.TASK -> R.drawable.ic_task
-            TypeLocation.MAIN -> R.drawable.ic_home
-            else -> R.drawable.baseline_delete_forever_24
-        }
     }
 
     fun onLocationClick() {
