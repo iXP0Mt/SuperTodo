@@ -1,6 +1,5 @@
 package com.ixp0mt.supertodo.presentation.navigation
 
-import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
@@ -24,18 +23,19 @@ import com.ixp0mt.supertodo.presentation.screen.task.TaskScreen
 import com.ixp0mt.supertodo.presentation.screen.task.create.CreateTaskScreen
 import com.ixp0mt.supertodo.presentation.screen.task.edit.EditTaskScreen
 import com.ixp0mt.supertodo.domain.util.TypeElement
-import com.ixp0mt.supertodo.presentation.screen.loading.LoadingScreen
 import com.ixp0mt.supertodo.presentation.screen.location.ChangeLocationScreen
 
 
 @Composable
-fun AppNavHost(
+fun  AppNavHost(
     navHostController: NavHostController,
     screenState: ScreenState,
     startDestination: String,
     innerPadding: PaddingValues,
     snackbarHostState: SnackbarHostState
 ) {
+    val currentScreen = screenState.currentScreen
+
     NavHost(
         modifier = Modifier
             .padding(innerPadding)
@@ -43,24 +43,17 @@ fun AppNavHost(
         navController = navHostController,
         startDestination = startDestination
     ) {
-
-        composable(Routes.Loading.fullRoute) {
-            LoadingScreen(
-                onComplete = {
-                    navHostController.navigate(Routes.MainFolder.fullRoute) {
-                        //launchSingleTop = true
-                        popUpTo(Routes.Loading.fullRoute) { inclusive = true }
-                    }
-                }
-            )
-        }
         composable(Routes.MainFolder.fullRoute) {
+            if(currentScreen == null) return@composable
+
             MainFolderScreen(
                 screenState = screenState,
                 onElementClick = { navigateToElementScreen(navHostController, it.typeElement, it.idElement) }
             )
         }
         composable(Routes.Folder.fullRoute) {
+            if(currentScreen == null) return@composable
+
             FolderScreen(
                 screenState = screenState,
                 onBackClick = { navHostController.navigateBack() },
@@ -72,6 +65,8 @@ fun AppNavHost(
             )
         }
         composable(Routes.FolderCreate.fullRoute) {
+            if(currentScreen == null) return@composable
+
             CreateFolderScreen(
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
@@ -88,6 +83,8 @@ fun AppNavHost(
             )
         }
         composable(Routes.FolderEdit.fullRoute) {
+            if(currentScreen == null) return@composable
+
             EditFolderScreen(
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
@@ -98,6 +95,8 @@ fun AppNavHost(
 
 
         composable(Routes.Project.fullRoute) {
+            if(currentScreen == null) return@composable
+
             ProjectScreen(
                 screenState = screenState,
                 onBackClick = {
@@ -111,6 +110,8 @@ fun AppNavHost(
             )
         }
         composable(Routes.ProjectCreate.fullRoute) {
+            if(currentScreen == null) return@composable
+
             CreateProjectScreen(
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
@@ -127,6 +128,8 @@ fun AppNavHost(
             )
         }
         composable(Routes.ProjectEdit.fullRoute) {
+            if(currentScreen == null) return@composable
+
             EditProjectScreen(
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
@@ -135,6 +138,8 @@ fun AppNavHost(
             )
         }
         composable(Routes.Task.fullRoute) {
+            if(currentScreen == null) return@composable
+
             TaskScreen(
                 screenState = screenState,
                 onBackClick = { navHostController.navigateBack() },
@@ -146,6 +151,8 @@ fun AppNavHost(
             )
         }
         composable(Routes.TaskCreate.fullRoute) {
+            if(currentScreen == null) return@composable
+
             CreateTaskScreen(
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
@@ -162,6 +169,8 @@ fun AppNavHost(
             )
         }
         composable(Routes.TaskEdit.fullRoute) {
+            if(currentScreen == null) return@composable
+
             EditTaskScreen(
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
@@ -171,6 +180,8 @@ fun AppNavHost(
         }
 
         composable(Routes.ChangeLocation.fullRoute) {
+            if(currentScreen == null) return@composable
+
             ChangeLocationScreen(
                 screenState = screenState,
                 onBackClick = { navHostController.navigateBack() },

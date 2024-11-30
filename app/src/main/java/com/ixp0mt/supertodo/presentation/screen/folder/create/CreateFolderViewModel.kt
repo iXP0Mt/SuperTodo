@@ -3,7 +3,6 @@ package com.ixp0mt.supertodo.presentation.screen.folder.create
 import com.ixp0mt.supertodo.domain.usecase.element.GetElementByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.folder.SaveNewFolderUseCase
 import com.ixp0mt.supertodo.presentation.navigation.screen.Screen
-import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
 import com.ixp0mt.supertodo.presentation.screen.core.CreateElementViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -19,10 +18,6 @@ class CreateFolderViewModel @Inject constructor(
     saveNewFolderUseCase = saveNewFolderUseCase,
     getElementByLocationUseCase = getElementByLocationUseCase
 ) {
-    override fun provideScreen(screenState: ScreenState): Screen {
-        return screenState.currentScreen as Screen.FolderCreate
-    }
-
     override fun provideActions(screen: Screen, scope: CoroutineScope) {
         (screen as Screen.FolderCreate).buttons.onEach { button ->
             handleAction(button)

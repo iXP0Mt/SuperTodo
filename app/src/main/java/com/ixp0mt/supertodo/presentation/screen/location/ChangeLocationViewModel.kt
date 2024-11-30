@@ -64,10 +64,6 @@ class ChangeLocationViewModel @Inject constructor(
     val listTasks: LiveData<List<TaskInfo>> = _listTasks
 
 
-    override fun provideScreen(screenState: ScreenState): Screen {
-        return screenState.currentScreen as Screen.ChangeLocation
-    }
-
     override fun provideActions(screen: Screen, scope: CoroutineScope) {
         (screen as Screen.ChangeLocation).buttons.onEach { button ->
             handleAction(button)

@@ -45,7 +45,7 @@ abstract class BaseViewModel(
      * Инициализация экрана
      */
     open fun initScreen(screenState: ScreenState) {
-        val screen = provideScreen(screenState)
+        val screen = screenState.currentScreen!!
 
         job = viewModelScope.launch {
             provideActions(screen, this)
@@ -233,11 +233,6 @@ abstract class BaseViewModel(
             else -> R.drawable.baseline_delete_forever_24
         }
     }
-
-    /**
-     * Предоставляет экран для базового класса ViewModel
-     */
-    protected abstract fun provideScreen(screenState: ScreenState): Screen
 
     protected abstract fun provideActions(screen: Screen, scope: CoroutineScope)
 }

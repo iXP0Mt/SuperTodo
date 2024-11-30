@@ -19,9 +19,7 @@ fun AppEntryScreen(
     navHostController: NavHostController,
     snackbarHostState: SnackbarHostState
 ) {
-    //val startDestination: String = Routes.MainFolder.rawRoute
-    val startDestination: String = Routes.Loading.rawRoute
-
+    val startDestination: String = Routes.MainFolder.rawRoute
 
     Scaffold(
         snackbarHost = { SnackBar(snackbarHostState) },

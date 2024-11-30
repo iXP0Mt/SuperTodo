@@ -24,16 +24,6 @@ sealed interface Screen {
     val actionsTopBar: List<ActionTopBar>
 
 
-    class Loading : Screen {
-        override val route: Routes = Routes.Loading
-        override val isAppBarVisible: Boolean = false
-        override val navigationIcon: ImageVector? = null
-        override val navigationIconContentDescription: String? = null
-        override val onNavigationIconClick: (() -> Unit)? = null
-        override val title: String = ""
-        override val actionsTopBar: List<ActionTopBar> = emptyList()
-    }
-
     class MainFolder : Screen {
         override val route: Routes = Routes.MainFolder
         override val isAppBarVisible: Boolean = true
@@ -206,8 +196,6 @@ sealed interface Screen {
 
 fun getScreen(rawRoute: String?): Screen? {
     return when(rawRoute) {
-        Routes.Loading.rawRoute -> Screen.Loading()
-
         Routes.MainFolder.rawRoute -> Screen.MainFolder()
 
         Routes.Folder.rawRoute -> Screen.Folder()

@@ -9,7 +9,6 @@ import com.ixp0mt.supertodo.domain.usecase.project.MarkCompleteProjectUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.GetTasksByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.MarkCompleteTaskUseCase
 import com.ixp0mt.supertodo.presentation.navigation.screen.Screen
-import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
 import com.ixp0mt.supertodo.presentation.screen.core.ElementViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -37,11 +36,6 @@ class ProjectViewModel @Inject constructor(
     getNamesFullLocationElementUseCase = getNamesFullLocationElementUseCase,
     deleteElementUseCase = deleteElementUseCase
 ) {
-
-    override fun provideScreen(screenState: ScreenState): Screen {
-        return screenState.currentScreen as Screen.Project
-    }
-
     override fun provideActions(screen: Screen, scope: CoroutineScope) {
         (screen as Screen.Project).buttons.onEach { button ->
             handleAction(button)

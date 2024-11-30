@@ -18,8 +18,6 @@ sealed class Routes(
     }
 
 
-    data object Loading : NoArgumentsRoute("loading")
-
     data object MainFolder : NoArgumentsRoute("main")
 
 
