@@ -1,5 +1,6 @@
 package com.ixp0mt.supertodo.presentation.screen.project.create
 
+import com.ixp0mt.supertodo.domain.usecase.element.GetElementByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.SaveNewProjectUseCase
 import com.ixp0mt.supertodo.presentation.navigation.screen.Screen
 import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
@@ -12,9 +13,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateProjectViewModel @Inject constructor(
-    saveNewProjectUseCase: SaveNewProjectUseCase
+    saveNewProjectUseCase: SaveNewProjectUseCase,
+    getElementByLocationUseCase: GetElementByLocationUseCase
 ) : CreateElementViewModel(
-    saveNewProjectUseCase = saveNewProjectUseCase
+    saveNewProjectUseCase = saveNewProjectUseCase,
+    getElementByLocationUseCase = getElementByLocationUseCase
 ) {
     override fun provideScreen(screenState: ScreenState): Screen {
         return screenState.currentScreen as Screen.ProjectCreate

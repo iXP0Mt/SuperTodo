@@ -9,6 +9,7 @@ import com.ixp0mt.supertodo.domain.model.FolderInfo
 import com.ixp0mt.supertodo.domain.model.LocationParam
 import com.ixp0mt.supertodo.domain.model.ProjectInfo
 import com.ixp0mt.supertodo.domain.model.TaskInfo
+import com.ixp0mt.supertodo.domain.usecase.element.GetElementByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.folder.SaveNewFolderUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.SaveNewProjectUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.SaveNewTaskUseCase
@@ -23,15 +24,16 @@ import kotlinx.coroutines.launch
 abstract class CreateElementViewModel(
     private val saveNewFolderUseCase: SaveNewFolderUseCase? = null,
     private val saveNewProjectUseCase: SaveNewProjectUseCase? = null,
-    private val saveNewTaskUseCase: SaveNewTaskUseCase? = null
+    private val saveNewTaskUseCase: SaveNewTaskUseCase? = null,
+    private val getElementByLocationUseCase: GetElementByLocationUseCase
 ) : BaseViewModel(
 
 ) {
     private val _backClick = MutableLiveData<Boolean?>(null)
     val backClick: LiveData<Boolean?> = _backClick
 
-    private val _showKeyboard = MutableLiveData<Boolean>(true)
-    val showKeyboard: LiveData<Boolean> = _showKeyboard
+    private val _showKeyboard = MutableLiveData<Boolean?>(true)
+    val showKeyboard: LiveData<Boolean?> = _showKeyboard
 
     private val _errorMsg = MutableLiveData<String?>()
     val errorMsg: LiveData<String?> = _errorMsg
@@ -49,29 +51,51 @@ abstract class CreateElementViewModel(
 
     private val _typeCreatedElement = MutableLiveData<TypeElement?>(null)
 
+    private val _locationName = MutableLiveData<String>("")
+    val locationName: LiveData<String> = _locationName
+
+    private val _idIcon = MutableLiveData<Int>(null)
+    val idIcon: LiveData<Int> = _idIcon
+
+    private val _locationClickInfo = MutableLiveData<LocationParam?>(null)
+    val locationClickInfo: LiveData<LocationParam?> = _locationClickInfo
+
 
     override fun clearScreen() {
         super.clearScreen()
 
         _backClick.value = null
-        _showKeyboard.value = false
+        _showKeyboard.value = null
         _errorMsg.value = null
         _paramNewElement.value = null
+        _locationClickInfo.value = null
     }
 
     override fun initScreen(screenState: ScreenState) {
         super.initScreen(screenState)
 
-        initTypeElement(screenState)
-        initLocation(screenState)
+        initCreatedElement(screenState)
+    }
+
+    private fun initCreatedElement(screenState: ScreenState) {
+        val typeCreatedElement= getTypeCreatedElement(screenState) ?: return
+        val locationInfo = getTempLocation(screenState) ?: return
+
+        viewModelScope.launch {
+            _locationName.value = getNameLocation(locationInfo.typeLocation, locationInfo.idLocation)
+            _idIcon.value = getIconIdLocation(locationInfo.typeLocation)
+        }
+
+        _typeCreatedElement.value = typeCreatedElement
+        _locationInfo.value = locationInfo
     }
 
     /**
      * Инициализирует тип создаваемого элемента
      */
-    private fun initTypeElement(screenState: ScreenState) {
-        val screen = screenState.currentScreen ?: return
-        _typeCreatedElement.value = when (screen) {
+    private fun getTypeCreatedElement(screenState: ScreenState): TypeElement? {
+        val screen = screenState.currentScreen
+        return when(screen) {
             is Screen.FolderCreate -> TypeElement.FOLDER
             is Screen.ProjectCreate -> TypeElement.PROJECT
             is Screen.TaskCreate -> TypeElement.TASK
@@ -82,41 +106,39 @@ abstract class CreateElementViewModel(
     /**
      * Инициализирует будущую локацию создаваемого элемента
      */
-    private fun initLocation(screenState: ScreenState) {
-        if (tryInitLocationFromSavedStateHandle(screenState)) return
-        if (tryInitLocationFromPreviousRoute(screenState)) return
+    private fun getTempLocation(screenState: ScreenState): LocationParam? {
+        return getLocationFromSavedStateHandle(screenState)
+            ?: getLocationFromPreviousRoute(screenState)
     }
 
     /**
      * Пробует получить параметры локации из SavedStateHandle состояния экрана
      *
-     * @return true, если удалось получить параметры, иначе false
+     * @return LocationParam, если удалось получить параметры, иначе null
      */
-    private fun tryInitLocationFromSavedStateHandle(screenState: ScreenState): Boolean {
+    private fun getLocationFromSavedStateHandle(screenState: ScreenState): LocationParam? {
         val typeLocation: TypeLocation? = screenState.savedStateHandle["typeLocation"]
         val idLocation: Long? = screenState.savedStateHandle["idLocation"]
 
         if (typeLocation != null && idLocation != null) {
-            _locationInfo.value = LocationParam(typeLocation, idLocation)
-            return true
+            return LocationParam(typeLocation, idLocation)
         }
 
-        return false
+        return null
     }
 
     /**
      * Получает локацию из предыдущего маршрута для того, чтобы понимать какую локацию будет иметь создающийся элемент.
      */
-    private fun tryInitLocationFromPreviousRoute(screenState: ScreenState): Boolean {
-        val prevRoute = screenState.previousRawRoute ?: return false
+    private fun getLocationFromPreviousRoute(screenState: ScreenState): LocationParam? {
+        val prevRoute = screenState.previousRawRoute ?: return null
 
-        val typeLocation = TypeLocation.convert(prevRoute) ?: return false
+        val typeLocation = TypeLocation.convert(prevRoute) ?: return null
 
         val idLocation: Long = if (typeLocation == TypeLocation.MAIN) 0
-        else screenState.previousArgs["ID"]?.toLongOrNull() ?: return false
+        else screenState.previousArgs["ID"]?.toLongOrNull() ?: return null
 
-        _locationInfo.value = LocationParam(typeLocation, idLocation)
-        return true
+        return LocationParam(typeLocation, idLocation)
     }
 
     /**
@@ -287,6 +309,7 @@ abstract class CreateElementViewModel(
      * Обработка действия "назад" из TopBar
      */
     fun handleBack() {
+        hideKeyboard()
         _backClick.value = _backClick.value?.not() ?: true
     }
 
@@ -339,5 +362,33 @@ abstract class CreateElementViewModel(
 
     private fun hideKeyboard() {
         _showKeyboard.value = false
+    }
+
+    private suspend fun getNameLocation(typeLocation: TypeLocation, idLocation: Long): String {
+        val locationAsElement = getLocationAsElement(typeLocation, idLocation)
+        return locationAsElement?.name ?: "NULL"
+    }
+
+    private suspend fun getLocationAsElement(typeLocation: TypeLocation, idLocation: Long): ElementInfo? {
+        val param = LocationParam(typeLocation, idLocation)
+        val result = getElementByLocationUseCase(param)
+        when {
+            result.isSuccess -> {
+                return result.getOrThrow()
+            }
+            result.isFailure -> {
+            }
+        }
+        return null
+    }
+
+    fun onLocationClick() {
+        hideKeyboard()
+
+        if(_locationClickInfo.value != null) return
+
+        if(_locationInfo.value == null) return
+
+        _locationClickInfo.value = _locationInfo.value
     }
 }

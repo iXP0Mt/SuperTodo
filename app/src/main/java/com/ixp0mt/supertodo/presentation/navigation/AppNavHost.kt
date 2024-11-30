@@ -83,9 +83,8 @@ fun AppNavHost(
                         clearPreviousRoute = Routes.FolderCreate.fullRoute
                     )
                 },
-                onBackClick = {
-                    navHostController.navigateBack()
-                }
+                onBackClick = { navHostController.navigateBack() },
+                onLocationClick = { navHostController.navigate(Routes.ChangeLocation(it.typeLocation, it.idLocation)) }
             )
         }
         composable(Routes.FolderEdit.fullRoute) {
@@ -123,7 +122,8 @@ fun AppNavHost(
                         clearPreviousRoute = Routes.ProjectCreate.fullRoute
                     )
                 },
-                onBackClick = { navHostController.navigateBack() }
+                onBackClick = { navHostController.navigateBack() },
+                onLocationClick = { navHostController.navigate(Routes.ChangeLocation(it.typeLocation, it.idLocation)) }
             )
         }
         composable(Routes.ProjectEdit.fullRoute) {
@@ -150,6 +150,7 @@ fun AppNavHost(
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
                 onBackClick = { navHostController.navigateBack() },
+                onLocationClick = { navHostController.navigate(Routes.ChangeLocation(it.typeLocation, it.idLocation)) },
                 onSuccessSave = {
                     navigateToElementScreen(
                         navHostController = navHostController,
@@ -181,7 +182,6 @@ fun AppNavHost(
                     }
                 },
                 onElementClick = {
-                    Log.d("ttt","type = ${it.typeLocation} | id = ${it.idLocation}")
                     navHostController.navigate(Routes.ChangeLocation(it.typeLocation, it.idLocation)) {
                         popUpTo(Routes.ChangeLocation.fullRoute) { inclusive = true }
                     }

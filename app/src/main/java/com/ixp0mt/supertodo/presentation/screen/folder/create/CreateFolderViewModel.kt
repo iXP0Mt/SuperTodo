@@ -1,5 +1,6 @@
 package com.ixp0mt.supertodo.presentation.screen.folder.create
 
+import com.ixp0mt.supertodo.domain.usecase.element.GetElementByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.folder.SaveNewFolderUseCase
 import com.ixp0mt.supertodo.presentation.navigation.screen.Screen
 import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
@@ -12,9 +13,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateFolderViewModel @Inject constructor(
-    saveNewFolderUseCase: SaveNewFolderUseCase
+    saveNewFolderUseCase: SaveNewFolderUseCase,
+    getElementByLocationUseCase: GetElementByLocationUseCase
 ) : CreateElementViewModel(
-    saveNewFolderUseCase = saveNewFolderUseCase
+    saveNewFolderUseCase = saveNewFolderUseCase,
+    getElementByLocationUseCase = getElementByLocationUseCase
 ) {
     override fun provideScreen(screenState: ScreenState): Screen {
         return screenState.currentScreen as Screen.FolderCreate

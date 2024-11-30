@@ -74,6 +74,17 @@ class ChangeLocationViewModel @Inject constructor(
         }.launchIn(scope)
     }
 
+    /**
+     * Обработка действий TopBar
+     */
+    private fun handleAction(button: TypeAction) {
+        when (button) {
+            TypeAction.ACTION_NAV_BACK -> handleBack()
+            TypeAction.ACTION_SAVE -> handleSave()
+            else -> Unit
+        }
+    }
+
     override fun clearScreen() {
         super.clearScreen()
 
@@ -95,8 +106,8 @@ class ChangeLocationViewModel @Inject constructor(
         val typeElementLocation = screenState.currentArgs[Routes.ChangeLocation.TYPE]?.let { TypeLocation.convert(it) }
         if(typeElementLocation === null) return
 
-        val idChangedElement = screenState.previousArgs["ID"]?.toLongOrNull()
-        if(idChangedElement === null) return
+        val idChangedElement: Long = screenState.previousArgs["ID"]?.toLongOrNull() ?: 0
+        //if(idChangedElement === null) return
         // Если ID элемента нет, значит элемент создаётся в данный момент
 
         val typeChangedElement = screenState.previousRawRoute?.let { TypeElement.convert(it) }
@@ -111,7 +122,7 @@ class ChangeLocationViewModel @Inject constructor(
             else 0b110
 
             loadInternalElements(typeLocationAsTypeElement, idElementLocation, flags)
-            markChangedElement(typeChangedElement, idChangedElement)
+            if(idChangedElement != 0L) markChangedElement(typeChangedElement, idChangedElement)
 
             _elementOfLocation.value = elementLocation
             _typeElementLocation.value = typeElementLocation
@@ -162,27 +173,14 @@ class ChangeLocationViewModel @Inject constructor(
         return null
     }
 
-    /**
-     * Обработка действий TopBar
-     */
-    private fun handleAction(button: TypeAction) {
-        when (button) {
-            TypeAction.ACTION_NAV_BACK -> handleBack()
-            TypeAction.ACTION_SAVE -> handleSave()
-            else -> Unit
-        }
-    }
-
     fun handleBack() {
         _backClick.value = _backClick.value?.not() ?: true
     }
 
     private fun handleSave() {
-        //_saveClick.value = _saveClick.value?.not() ?: true
-
-        if(_saveClickInfo.value == null) {
-            _saveClickInfo.value = LocationParam(_typeElementLocation.value!!, _idElementLocation.value!!)
-        }
+        val temp = LocationParam(_typeElementLocation.value!!, _idElementLocation.value!!)
+        _saveClickInfo.value = null
+        _saveClickInfo.value = temp
     }
 
     fun backLocationClick() {
