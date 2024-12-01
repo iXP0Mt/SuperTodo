@@ -112,12 +112,10 @@ class ChangeLocationViewModel @Inject constructor(
         viewModelScope.launch {
             val elementLocation = getElementByLocation(typeElementLocation, idElementLocation) ?: return@launch
 
-            val typeLocationAsTypeElement = TypeElement.convert(typeElementLocation.name) ?: return@launch
-
             val flags = if(typeChangedElement == TypeElement.TASK) 0b111
             else 0b110
 
-            loadInternalElements(typeLocationAsTypeElement, idElementLocation, flags)
+            loadInternalElementsByLocation(typeElementLocation, idElementLocation, flags)
             if(idChangedElement != 0L) markChangedElement(typeChangedElement, idChangedElement)
 
             _elementOfLocation.value = elementLocation

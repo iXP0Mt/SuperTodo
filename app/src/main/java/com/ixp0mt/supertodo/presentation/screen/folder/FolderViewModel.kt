@@ -4,6 +4,7 @@ import com.ixp0mt.supertodo.domain.usecase.element.DeleteElementUseCase
 import com.ixp0mt.supertodo.domain.usecase.element.GetNamesFullLocationElementUseCase
 import com.ixp0mt.supertodo.domain.usecase.folder.GetFolderByIdUseCase
 import com.ixp0mt.supertodo.domain.usecase.folder.GetFoldersByLocationUseCase
+import com.ixp0mt.supertodo.domain.usecase.folder.GetFoldersWithCountsSubElementsByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.GetProjectsByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.MarkCompleteProjectUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.GetTasksByLocationUseCase
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FolderViewModel @Inject constructor(
-    getFoldersByLocationUseCase: GetFoldersByLocationUseCase,
+    //getFoldersByLocationUseCase: GetFoldersByLocationUseCase,
+    getFoldersWithCountsSubElementsByLocationUseCase: GetFoldersWithCountsSubElementsByLocationUseCase,
     getProjectsByLocationUseCase: GetProjectsByLocationUseCase,
     getTasksByLocationUseCase: GetTasksByLocationUseCase,
     getFolderByIdUseCase: GetFolderByIdUseCase,
@@ -27,7 +29,8 @@ class FolderViewModel @Inject constructor(
     getNamesFullLocationElementUseCase: GetNamesFullLocationElementUseCase,
     deleteElementUseCase: DeleteElementUseCase
 ) : ElementViewModel(
-    getFoldersByLocationUseCase = getFoldersByLocationUseCase,
+    //getFoldersByLocationUseCase = getFoldersByLocationUseCase,
+    getFoldersWithCountsSubElementsByLocationUseCase = getFoldersWithCountsSubElementsByLocationUseCase,
     getProjectsByLocationUseCase = getProjectsByLocationUseCase,
     getTasksByLocationUseCase = getTasksByLocationUseCase,
     getFolderByIdUseCase = getFolderByIdUseCase,

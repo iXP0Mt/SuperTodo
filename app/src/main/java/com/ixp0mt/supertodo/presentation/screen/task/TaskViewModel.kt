@@ -2,6 +2,7 @@ package com.ixp0mt.supertodo.presentation.screen.task
 
 import com.ixp0mt.supertodo.domain.usecase.element.DeleteElementUseCase
 import com.ixp0mt.supertodo.domain.usecase.element.GetNamesFullLocationElementUseCase
+import com.ixp0mt.supertodo.domain.usecase.folder.GetFoldersWithCountsSubElementsByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.GetTaskByIdUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.GetTasksByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.MarkCompleteTaskUseCase
@@ -15,13 +16,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TaskViewModel @Inject constructor(
-    getTasksByLocationUseCase: GetTasksByLocationUseCase,
+    //getTasksByLocationUseCase: GetTasksByLocationUseCase,
+    getFoldersWithCountsSubElementsByLocationUseCase: GetFoldersWithCountsSubElementsByLocationUseCase,
     getTaskByIdUseCase: GetTaskByIdUseCase,
     markCompleteTaskUseCase: MarkCompleteTaskUseCase,
     getNamesFullLocationElementUseCase: GetNamesFullLocationElementUseCase,
     deleteElementUseCase: DeleteElementUseCase
 ) : ElementViewModel(
-    getTasksByLocationUseCase = getTasksByLocationUseCase,
+    //getTasksByLocationUseCase = getTasksByLocationUseCase,
+    getFoldersWithCountsSubElementsByLocationUseCase = getFoldersWithCountsSubElementsByLocationUseCase,
     getTaskByIdUseCase = getTaskByIdUseCase,
     markCompleteTaskUseCase = markCompleteTaskUseCase,
     getNamesFullLocationElementUseCase = getNamesFullLocationElementUseCase,

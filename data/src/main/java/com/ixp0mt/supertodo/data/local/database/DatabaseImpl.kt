@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.ixp0mt.supertodo.data.local.database.entity.Folder
 import com.ixp0mt.supertodo.data.local.database.entity.Project
 import com.ixp0mt.supertodo.data.local.database.entity.Task
+import com.ixp0mt.supertodo.data.local.database.tuple.FolderExt
 import com.ixp0mt.supertodo.domain.model.GetFolderByIdParam
 import com.ixp0mt.supertodo.domain.model.GetFoldersByTypeLocationParam
 import com.ixp0mt.supertodo.domain.model.GetProjectByIdParam
@@ -37,6 +38,10 @@ class DatabaseImpl(
 
     override suspend fun getFoldersByLocation(param: LocationParam): List<Folder> {
         return db.folderDao().getByLocation(typeLocation = param.typeLocation, idLocation = param.idLocation)
+    }
+
+    override suspend fun getFoldersWithCountsSubElementsByLocation(param: LocationParam): List<FolderExt> {
+        return db.folderDao().getWithCountsInternalElements(param.typeLocation, param.idLocation)
     }
 
     override suspend fun saveEditFolder(folder: Folder): Int {

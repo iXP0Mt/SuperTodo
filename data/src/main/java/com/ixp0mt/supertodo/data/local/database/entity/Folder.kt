@@ -15,3 +15,4 @@ data class Folder(
     val dateEdit: Long?,
     val dateArchive: Long?
 )
+

@@ -8,6 +8,7 @@ import com.ixp0mt.supertodo.domain.usecase.element.GetElementByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.element.GetNamesFullLocationElementUseCase
 import com.ixp0mt.supertodo.domain.usecase.folder.GetFolderByIdUseCase
 import com.ixp0mt.supertodo.domain.usecase.folder.GetFoldersByLocationUseCase
+import com.ixp0mt.supertodo.domain.usecase.folder.GetFoldersWithCountsSubElementsByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.GetProjectByIdUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.GetProjectsByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.GetTaskByIdUseCase
@@ -139,5 +140,10 @@ class DomainModule {
             projectRepository,
             taskRepository
         )
+    }
+
+    @Provides
+    fun provideGetFoldersWithCountsSubElementsByLocationUseCase(folderRepository: FolderRepository): GetFoldersWithCountsSubElementsByLocationUseCase {
+        return GetFoldersWithCountsSubElementsByLocationUseCase(folderRepository)
     }
 }

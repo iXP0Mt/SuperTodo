@@ -12,5 +12,6 @@ interface FolderRepository {
     suspend fun getByTypeLocation(param: GetFoldersByTypeLocationParam): List<FolderInfo>
     suspend fun getById(param: GetFolderByIdParam): FolderInfo
     suspend fun getByLocation(param: LocationParam): List<FolderInfo>
+    suspend fun getWithCountsSubElementsByLocation(param: LocationParam): List<FolderInfo>
     suspend fun deleteByLocation(param: LocationParam): Int
 }

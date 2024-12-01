@@ -1,6 +1,7 @@
 package com.ixp0mt.supertodo.presentation.component
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,12 +56,19 @@ fun ST_FolderCard(
                     contentDescription = null
                 )
 
-                Text(
-                    text = item.name,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 2,
-                )
+                Column {
+                    Text(
+                        text = item.name,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 2,
+                    )
+                    item.description?.let { strCounters ->
+                        Text(
+                            text = strCounters,
+                            color = MaterialTheme.colorScheme.onSurface.copy(0.5f)
+                        )
+                    }
+                }
             }
 
             Icon(

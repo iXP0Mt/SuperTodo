@@ -1,5 +1,6 @@
 package com.ixp0mt.supertodo.presentation.screen.core
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,8 +13,10 @@ import com.ixp0mt.supertodo.domain.model.GetTaskByIdParam
 import com.ixp0mt.supertodo.domain.model.LocationParam
 import com.ixp0mt.supertodo.domain.model.ProjectInfo
 import com.ixp0mt.supertodo.domain.model.TaskInfo
+import com.ixp0mt.supertodo.domain.model.ValuesElementsInfo
 import com.ixp0mt.supertodo.domain.usecase.folder.GetFolderByIdUseCase
 import com.ixp0mt.supertodo.domain.usecase.folder.GetFoldersByLocationUseCase
+import com.ixp0mt.supertodo.domain.usecase.folder.GetFoldersWithCountsSubElementsByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.GetProjectByIdUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.GetProjectsByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.GetTaskByIdUseCase
@@ -33,7 +36,8 @@ abstract class BaseViewModel(
     private val getTasksByLocationUseCase: GetTasksByLocationUseCase? = null,
     private val getFolderByIdUseCase: GetFolderByIdUseCase? = null,
     private val getProjectByIdUseCase: GetProjectByIdUseCase? = null,
-    private val getTaskByIdUseCase: GetTaskByIdUseCase? = null
+    private val getTaskByIdUseCase: GetTaskByIdUseCase? = null,
+    private val getFoldersWithCountsSubElementsByLocationUseCase: GetFoldersWithCountsSubElementsByLocationUseCase? = null
 ) : ViewModel() {
     protected val _listFolders = MutableLiveData<List<FolderInfo>>(emptyList())
     protected val _listProjects = MutableLiveData<List<ProjectInfo>>(emptyList())
@@ -60,28 +64,48 @@ abstract class BaseViewModel(
     }
 
     /**
-     * Загрузка содержимого экрана (папки, проекты, задачи), если были правильно переданы UseCase'ы
+     * Загрузка содержимого экрана (папки, проекты, задачи), если были правильно переданы UseCase'ы.
      *
-     * @param typeElement Для какого типа элемента загружать содержимое
-     * @param idElement Для какого ID элемента загружать содержимое
+     * @param typeLocation Тип элемента, который является локацией для внутренних элементов
+     * @param idLocation ID элемента, который является локацией для внутренних элементов
      * @param flags Флаги в двоичном представлении для настройки какие типы внутренних элементов подгружать:
      *              папки (x), проекты (y), задачи (z) - 0bxyz, где вместо символов (x,y,z) надо выставить 0 или 1
      */
-    protected suspend fun loadInternalElements(typeElement: TypeElement, idElement: Long, flags: Int = 0b111) {
-        if((flags and 0b100) == 0b100) getFoldersByLocationUseCase?.let { loadInternalFolders(typeElement, idElement) }
-        if((flags and 0b010) == 0b010) getProjectsByLocationUseCase?.let { loadInternalProjects(typeElement, idElement) }
-        if((flags and 0b001) == 0b001) getTasksByLocationUseCase?.let { loadInternalTasks(typeElement, idElement) }
+    protected suspend fun loadInternalElementsByLocation(typeLocation: TypeLocation, idLocation: Long, flags: Int = 0b111) {
+        if((flags and 0b100) != 0) getFoldersByLocationUseCase?.let { loadInternalFolders(typeLocation, idLocation) }
+        if((flags and 0b010) != 0) getProjectsByLocationUseCase?.let { loadInternalProjects(typeLocation, idLocation) }
+        if((flags and 0b001) != 0) getTasksByLocationUseCase?.let { loadInternalTasks(typeLocation, idLocation) }
+    }
+
+    protected suspend fun loadSubElementsWithCountsSubElementsByLocation(typeLocation: TypeLocation, idLocation: Long) {
+        getFoldersWithCountsSubElementsByLocationUseCase?.let { loadSubFoldersWithCountsSubElementsByLocation(typeLocation, idLocation) }
+    }
+
+    /**
+     * Загружает внутренние папки элемента, используя тип и ID этого элемента как локацию внутренних папок.
+     */
+    private suspend fun loadSubFoldersWithCountsSubElementsByLocation(typeLocation: TypeLocation, idLocation: Long) {
+        val param = LocationParam(typeLocation, idLocation)
+        val result = getFoldersWithCountsSubElementsByLocationUseCase!!(param)
+        when {
+            result.isSuccess -> {
+                _listFolders.value = result.getOrThrow()
+            }
+            result.isFailure -> {
+
+            }
+        }
     }
 
 
     /**
      * Загрузить внутренние папки данного элемента
      *
-     * @param typeElement Тип элемента, у которого будут получены папки, которые он содержит
-     * @param idElement ID элемента
+     * @param typeLocation Тип элемента, который является локацией для внутренних папок
+     * @param idLocation ID элемента
      */
-    private suspend fun loadInternalFolders(typeElement: TypeElement, idElement: Long) {
-        val param = LocationParam(TypeLocation.convert(typeElement.name)!!, idElement)
+    private suspend fun loadInternalFolders(typeLocation: TypeLocation, idLocation: Long) {
+        val param = LocationParam(typeLocation, idLocation)
         val result = getFoldersByLocationUseCase!!(param)
         when {
             result.isSuccess -> {
@@ -96,11 +120,11 @@ abstract class BaseViewModel(
     /**
      * Загрузить внутренние проекты данного элемента
      *
-     * @param typeElement Тип элемента, у которого будут получены проекты, которые он содержит
-     * @param idElement ID элемента
+     * @param typeLocation Тип элемента, который является локацией для внутренних проектов
+     * @param idLocation ID элемента
      */
-    private suspend fun loadInternalProjects(typeElement: TypeElement, idElement: Long) {
-        val param = LocationParam(TypeLocation.convert(typeElement.name)!!, idElement)
+    private suspend fun loadInternalProjects(typeLocation: TypeLocation, idLocation: Long) {
+        val param = LocationParam(typeLocation, idLocation)
         val result = getProjectsByLocationUseCase!!(param)
         when {
             result.isSuccess -> {
@@ -115,11 +139,11 @@ abstract class BaseViewModel(
     /**
      * Загрузить внутренние задачи данного элемента
      *
-     * @param typeElement Тип элемента, у которого будут получены задачи, которые он содержит
-     * @param idElement ID элемента
+     * @param typeLocation Тип элемента, который является локацией для внутренних задач
+     * @param idLocation ID элемента
      */
-    private suspend fun loadInternalTasks(typeElement: TypeElement, idElement: Long) {
-        val param = LocationParam(TypeLocation.convert(typeElement.name)!!, idElement)
+    private suspend fun loadInternalTasks(typeLocation: TypeLocation, idLocation: Long) {
+        val param = LocationParam(typeLocation, idLocation)
         val result = getTasksByLocationUseCase!!(param)
         when {
             result.isSuccess -> {
@@ -209,13 +233,6 @@ abstract class BaseViewModel(
         return null
     }
 
-
-    /**
-     * Перейти на страницу отображения данного элемента
-     */
-    fun handleElement() {
-
-    }
 
     /**
      * Получить ID иконки элемента-локации по типу локации

@@ -2,11 +2,14 @@ package com.ixp0mt.supertodo.data.repository
 
 import com.ixp0mt.supertodo.data.local.database.Database
 import com.ixp0mt.supertodo.data.local.database.entity.Folder
+import com.ixp0mt.supertodo.data.local.database.tuple.FolderExt
 import com.ixp0mt.supertodo.domain.model.FolderInfo
 import com.ixp0mt.supertodo.domain.model.GetFolderByIdParam
 import com.ixp0mt.supertodo.domain.model.GetFoldersByTypeLocationParam
 import com.ixp0mt.supertodo.domain.model.LocationParam
+import com.ixp0mt.supertodo.domain.model.ValuesElementsInfo
 import com.ixp0mt.supertodo.domain.repository.FolderRepository
+import com.ixp0mt.supertodo.domain.util.TypeLocation
 
 class FolderRepositoryImpl(private val database: Database) : FolderRepository {
 
@@ -31,6 +34,12 @@ class FolderRepositoryImpl(private val database: Database) : FolderRepository {
     override suspend fun getByLocation(param: LocationParam): List<FolderInfo> {
         val response = database.getFoldersByLocation(param)
         val result = response.toDomain()
+        return result
+    }
+
+    override suspend fun getWithCountsSubElementsByLocation(param: LocationParam): List<FolderInfo> {
+        val response = database.getFoldersWithCountsSubElementsByLocation(param)
+        val result = response.toDomain2()
         return result
     }
 
@@ -94,6 +103,26 @@ class FolderRepositoryImpl(private val database: Database) : FolderRepository {
         )
     }
 
-
+    //@Deprecated("Локация это костыль", level = DeprecationLevel.WARNING)
+    // Жалуется на то, что компилятор не может распознать разные toDomain, потому что не учитывает входной тип
+    private fun List<FolderExt>.toDomain2(): List<FolderInfo> {
+        return this.map {
+            FolderInfo(
+                idFolder = it.idFolder,
+                name = it.name,
+                description = null,
+                typeLocation = TypeLocation.MAIN,
+                idLocation = 0,
+                dateCreate = it.dateCreate,
+                dateEdit = it.dateEdit,
+                dateArchive = null,
+                countsSubElements = ValuesElementsInfo(
+                    it.countSubFolders,
+                    it.countSubProjects,
+                    it.countSubTasks
+                )
+            )
+        }
+    }
 
 }

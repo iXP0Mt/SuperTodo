@@ -3,6 +3,7 @@ package com.ixp0mt.supertodo.data.local.database
 import com.ixp0mt.supertodo.data.local.database.entity.Folder
 import com.ixp0mt.supertodo.data.local.database.entity.Project
 import com.ixp0mt.supertodo.data.local.database.entity.Task
+import com.ixp0mt.supertodo.data.local.database.tuple.FolderExt
 import com.ixp0mt.supertodo.domain.model.GetFolderByIdParam
 import com.ixp0mt.supertodo.domain.model.GetFoldersByTypeLocationParam
 import com.ixp0mt.supertodo.domain.model.GetProjectByIdParam
@@ -17,6 +18,7 @@ interface Database {
     suspend fun saveNewFolder(folder: Folder): Long
     suspend fun getFolderById(params: GetFolderByIdParam): Folder
     suspend fun getFoldersByLocation(param: LocationParam): List<Folder>
+    suspend fun getFoldersWithCountsSubElementsByLocation(param: LocationParam): List<FolderExt>
     suspend fun saveEditFolder(folder: Folder): Int
     suspend fun deleteFolder(folder: Folder): Int
     suspend fun deleteFoldersByLocation(param: LocationParam): Int
