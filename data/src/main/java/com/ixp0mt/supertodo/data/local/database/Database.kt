@@ -4,6 +4,8 @@ import com.ixp0mt.supertodo.data.local.database.entity.Folder
 import com.ixp0mt.supertodo.data.local.database.entity.Project
 import com.ixp0mt.supertodo.data.local.database.entity.Task
 import com.ixp0mt.supertodo.data.local.database.tuple.FolderExt
+import com.ixp0mt.supertodo.data.local.database.tuple.ProjectExt
+import com.ixp0mt.supertodo.data.local.database.tuple.TaskExt
 import com.ixp0mt.supertodo.domain.model.GetFolderByIdParam
 import com.ixp0mt.supertodo.domain.model.GetFoldersByTypeLocationParam
 import com.ixp0mt.supertodo.domain.model.GetProjectByIdParam
@@ -28,6 +30,7 @@ interface Database {
     suspend fun saveEditProject(project: Project): Int
     suspend fun getProjectsByTypeLocation(param: GetProjectsByTypeLocationParam): List<Project>
     suspend fun getProjectsByLocation(param: LocationParam): List<Project>
+    suspend fun getProjectsWithCountsSubElementsByLocation(param: LocationParam): List<ProjectExt>
     suspend fun getProjectById(param: GetProjectByIdParam): Project
     suspend fun deleteProject(project: Project): Int
     suspend fun deleteProjectsByLocation(param: LocationParam): Int
@@ -39,6 +42,7 @@ interface Database {
     suspend fun saveEditTask(task: Task): Int
     suspend fun getTasksByTypeLocation(param: GetTasksByTypeLocationParam): List<Task>
     suspend fun getTasksByLocation(param: LocationParam): List<Task>
+    suspend fun getTasksWithCountsSubElementsByLocation(param: LocationParam): List<TaskExt>
     suspend fun getTaskById(param: GetTaskByIdParam): Task
     suspend fun deleteTask(task: Task): Int
     suspend fun deleteTasksByLocation(param: LocationParam): Int

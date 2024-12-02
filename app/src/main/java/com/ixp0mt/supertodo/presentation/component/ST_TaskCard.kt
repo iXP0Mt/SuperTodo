@@ -1,6 +1,7 @@
 package com.ixp0mt.supertodo.presentation.component
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -65,18 +66,26 @@ fun ST_TaskCard(
                     )
                 }
 
-                Text(
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    text = item.name,
-                    style = if(item.dateCompleted == null) {
-                        LocalTextStyle.current
-                    } else {
-                        LocalTextStyle.current.copy(
-                            textDecoration = TextDecoration.LineThrough,
+                Column {
+                    Text(
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        text = item.name,
+                        style = if(item.dateCompleted == null) {
+                            LocalTextStyle.current
+                        } else {
+                            LocalTextStyle.current.copy(
+                                textDecoration = TextDecoration.LineThrough,
+                            )
+                        }
+                    )
+                    item.description?.let { strCounters ->
+                        Text(
+                            text = strCounters,
+                            color = MaterialTheme.colorScheme.onSurface.copy(0.5f)
                         )
                     }
-                )
+                }
             }
 
             Icon(

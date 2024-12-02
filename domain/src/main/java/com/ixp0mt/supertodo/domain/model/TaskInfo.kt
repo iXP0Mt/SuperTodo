@@ -13,7 +13,8 @@ data class TaskInfo(
     val dateArchive: Long?,
     val dateStart: Long?,
     val dateEnd: Long?,
-    val dateCompleted: Long?
+    val dateCompleted: Long?,
+    override val countsSubElements: ValuesElementsInfo? = null
 ) : ElementInfo {
     companion object {
         fun empty() = TaskInfo(

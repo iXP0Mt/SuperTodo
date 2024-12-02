@@ -2,12 +2,15 @@ package com.ixp0mt.supertodo.data.repository
 
 import com.ixp0mt.supertodo.data.local.database.Database
 import com.ixp0mt.supertodo.data.local.database.entity.Project
+import com.ixp0mt.supertodo.data.local.database.tuple.ProjectExt
 import com.ixp0mt.supertodo.domain.model.GetProjectByIdParam
 import com.ixp0mt.supertodo.domain.model.GetProjectsByTypeLocationParam
 import com.ixp0mt.supertodo.domain.model.LocationParam
 import com.ixp0mt.supertodo.domain.model.ProjectInfo
 import com.ixp0mt.supertodo.domain.model.SetCompleteParam
+import com.ixp0mt.supertodo.domain.model.ValuesElementsInfo
 import com.ixp0mt.supertodo.domain.repository.ProjectRepository
+import com.ixp0mt.supertodo.domain.util.TypeLocation
 
 class ProjectRepositoryImpl(private val database: Database) : ProjectRepository {
     override suspend fun saveNew(project: ProjectInfo): Long {
@@ -42,6 +45,12 @@ class ProjectRepositoryImpl(private val database: Database) : ProjectRepository 
 
     override suspend fun deleteByLocation(param: LocationParam): Int {
         return database.deleteProjectsByLocation(param)
+    }
+
+    override suspend fun getWithCountsSubElementsByLocation(param: LocationParam): List<ProjectInfo> {
+        val response = database.getProjectsWithCountsSubElementsByLocation(param)
+        val result = response.toDomain2()
+        return result
     }
 
     override suspend fun setComplete(param: SetCompleteParam): Int {
@@ -96,4 +105,29 @@ class ProjectRepositoryImpl(private val database: Database) : ProjectRepository 
         dateEnd = this.dateEnd,
         dateCompleted = this.dateCompleted
     )
+
+    @Deprecated("Локация это костыль", level = DeprecationLevel.WARNING)
+    // Жалуется на то, что компилятор не может распознать разные toDomain, потому что не учитывает входной тип
+    private fun List<ProjectExt>.toDomain2(): List<ProjectInfo> {
+        return this.map {
+            ProjectInfo(
+                idProject = it.idProject,
+                name = it.name,
+                description = null,
+                typeLocation = TypeLocation.MAIN,
+                idLocation = 0,
+                dateCreate = it.dateCreate,
+                dateEdit = it.dateEdit,
+                dateArchive = null,
+                dateStart = null,
+                dateEnd = null,
+                dateCompleted = it.dateCompleted,
+                countsSubElements = ValuesElementsInfo(
+                    it.countSubFolders,
+                    it.countSubProjects,
+                    it.countSubTasks
+                )
+            )
+        }
+    }
 }

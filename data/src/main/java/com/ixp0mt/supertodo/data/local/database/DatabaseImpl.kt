@@ -6,6 +6,8 @@ import com.ixp0mt.supertodo.data.local.database.entity.Folder
 import com.ixp0mt.supertodo.data.local.database.entity.Project
 import com.ixp0mt.supertodo.data.local.database.entity.Task
 import com.ixp0mt.supertodo.data.local.database.tuple.FolderExt
+import com.ixp0mt.supertodo.data.local.database.tuple.ProjectExt
+import com.ixp0mt.supertodo.data.local.database.tuple.TaskExt
 import com.ixp0mt.supertodo.domain.model.GetFolderByIdParam
 import com.ixp0mt.supertodo.domain.model.GetFoldersByTypeLocationParam
 import com.ixp0mt.supertodo.domain.model.GetProjectByIdParam
@@ -73,6 +75,10 @@ class DatabaseImpl(
         return db.projectDao().getByLocation(param.typeLocation, param.idLocation)
     }
 
+    override suspend fun getProjectsWithCountsSubElementsByLocation(param: LocationParam): List<ProjectExt> {
+        return db.projectDao().getWithCountsInternalElements(param.typeLocation, param.idLocation)
+    }
+
     override suspend fun getProjectById(param: GetProjectByIdParam): Project {
         return db.projectDao().getById(param.idProject)
     }
@@ -108,6 +114,10 @@ class DatabaseImpl(
 
     override suspend fun getTasksByLocation(param: LocationParam): List<Task> {
         return db.taskDao().getByLocation(param.typeLocation, param.idLocation)
+    }
+
+    override suspend fun getTasksWithCountsSubElementsByLocation(param: LocationParam): List<TaskExt> {
+        return db.taskDao().getWithCountsInternalElements(param.typeLocation, param.idLocation)
     }
 
     override suspend fun getTaskById(param: GetTaskByIdParam): Task {

@@ -18,9 +18,11 @@ import com.ixp0mt.supertodo.domain.usecase.folder.GetFoldersByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.folder.GetFoldersWithCountsSubElementsByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.GetProjectByIdUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.GetProjectsByLocationUseCase
+import com.ixp0mt.supertodo.domain.usecase.project.GetProjectsWithCountsSubElementsByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.MarkCompleteProjectUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.GetTaskByIdUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.GetTasksByLocationUseCase
+import com.ixp0mt.supertodo.domain.usecase.task.GetTasksWithCountsSubElementsByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.MarkCompleteTaskUseCase
 import com.ixp0mt.supertodo.domain.util.TypeElement
 import com.ixp0mt.supertodo.domain.util.TypeLocation
@@ -33,6 +35,8 @@ abstract class ElementViewModel(
     getProjectsByLocationUseCase: GetProjectsByLocationUseCase? = null,
     getTasksByLocationUseCase: GetTasksByLocationUseCase? = null,
     getFoldersWithCountsSubElementsByLocationUseCase: GetFoldersWithCountsSubElementsByLocationUseCase? = null,
+    getProjectsWithCountsSubElementsByLocationUseCase: GetProjectsWithCountsSubElementsByLocationUseCase? = null,
+    getTasksWithCountsSubElementsByLocationUseCase: GetTasksWithCountsSubElementsByLocationUseCase? = null,
     getFolderByIdUseCase: GetFolderByIdUseCase? = null,
     getProjectByIdUseCase: GetProjectByIdUseCase? = null,
     getTaskByIdUseCase: GetTaskByIdUseCase? = null,
@@ -45,6 +49,8 @@ abstract class ElementViewModel(
     getProjectsByLocationUseCase = getProjectsByLocationUseCase,
     getTasksByLocationUseCase = getTasksByLocationUseCase,
     getFoldersWithCountsSubElementsByLocationUseCase = getFoldersWithCountsSubElementsByLocationUseCase,
+    getProjectsWithCountsSubElementsByLocationUseCase = getProjectsWithCountsSubElementsByLocationUseCase,
+    getTasksWithCountsSubElementsByLocationUseCase = getTasksWithCountsSubElementsByLocationUseCase,
     getFolderByIdUseCase = getFolderByIdUseCase,
     getProjectByIdUseCase = getProjectByIdUseCase,
     getTaskByIdUseCase = getTaskByIdUseCase
@@ -106,54 +112,10 @@ abstract class ElementViewModel(
             setFormattedPedigree(element.typeLocation, element.idLocation)
 
             val typeElementAsLocation = TypeLocation.convert(typeElement.name) ?: return@launch
-            loadInternalElementsByLocation(typeElementAsLocation, idElement, 0b011)
             loadSubElementsWithCountsSubElementsByLocation(typeElementAsLocation, idElement)
-            setFormattedCountersForSubElements()
 
             _elementInfo.value = element
         }
-    }
-
-    protected fun setFormattedCountersForSubElements() {
-        _listFolders.value = _listFolders.value!!.map { element ->
-            if(element.countsSubElements != null) {
-                element.copy(description = getDeclension(element.countsSubElements!!))
-            } else {
-                element.copy(description = null)
-            }
-        }
-    }
-
-    private fun getDeclension(counters: ValuesElementsInfo): String? {
-        fun getWord(number: Int, forms: List<String>): String {
-            val n = number % 100
-            val lastDigit = n % 10
-
-            return when {
-                n in 11..19 -> forms[0]
-                lastDigit == 1 -> forms[1]
-                lastDigit in 2..4 -> forms[2]
-                else -> forms[0]
-            }
-        }
-
-        val folderDec = listOf("папок", "папка", "папки")
-        val projectDec = listOf("проектов", "проект", "проекта")
-        val taskDec = listOf("задач", "задача", "задачи")
-
-        val parts = mutableListOf<String>()
-        if (counters.folders > 0) {
-            parts.add("${counters.folders} ${getWord(counters.folders, folderDec)}")
-        }
-        if (counters.projects > 0) {
-            parts.add("${counters.projects} ${getWord(counters.projects, projectDec)}")
-        }
-        if (counters.tasks > 0) {
-            parts.add("${counters.tasks} ${getWord(counters.tasks, taskDec)}")
-        }
-
-        return if(parts.size == 0) null
-        else parts.joinToString(" ")
     }
 
     /**

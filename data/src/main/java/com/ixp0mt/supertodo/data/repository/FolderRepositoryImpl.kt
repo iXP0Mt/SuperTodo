@@ -103,7 +103,7 @@ class FolderRepositoryImpl(private val database: Database) : FolderRepository {
         )
     }
 
-    //@Deprecated("Локация это костыль", level = DeprecationLevel.WARNING)
+    @Deprecated("Локация это костыль", level = DeprecationLevel.WARNING)
     // Жалуется на то, что компилятор не может распознать разные toDomain, потому что не учитывает входной тип
     private fun List<FolderExt>.toDomain2(): List<FolderInfo> {
         return this.map {

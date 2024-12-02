@@ -19,8 +19,10 @@ import com.ixp0mt.supertodo.domain.usecase.folder.GetFoldersByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.folder.GetFoldersWithCountsSubElementsByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.GetProjectByIdUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.GetProjectsByLocationUseCase
+import com.ixp0mt.supertodo.domain.usecase.project.GetProjectsWithCountsSubElementsByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.GetTaskByIdUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.GetTasksByLocationUseCase
+import com.ixp0mt.supertodo.domain.usecase.task.GetTasksWithCountsSubElementsByLocationUseCase
 import com.ixp0mt.supertodo.domain.util.TypeElement
 import com.ixp0mt.supertodo.domain.util.TypeLocation
 import com.ixp0mt.supertodo.presentation.navigation.screen.Screen
@@ -37,7 +39,9 @@ abstract class BaseViewModel(
     private val getFolderByIdUseCase: GetFolderByIdUseCase? = null,
     private val getProjectByIdUseCase: GetProjectByIdUseCase? = null,
     private val getTaskByIdUseCase: GetTaskByIdUseCase? = null,
-    private val getFoldersWithCountsSubElementsByLocationUseCase: GetFoldersWithCountsSubElementsByLocationUseCase? = null
+    private val getFoldersWithCountsSubElementsByLocationUseCase: GetFoldersWithCountsSubElementsByLocationUseCase? = null,
+    private val getProjectsWithCountsSubElementsByLocationUseCase: GetProjectsWithCountsSubElementsByLocationUseCase? = null,
+    private val getTasksWithCountsSubElementsByLocationUseCase: GetTasksWithCountsSubElementsByLocationUseCase? = null
 ) : ViewModel() {
     protected val _listFolders = MutableLiveData<List<FolderInfo>>(emptyList())
     protected val _listProjects = MutableLiveData<List<ProjectInfo>>(emptyList())
@@ -78,23 +82,142 @@ abstract class BaseViewModel(
     }
 
     protected suspend fun loadSubElementsWithCountsSubElementsByLocation(typeLocation: TypeLocation, idLocation: Long) {
-        getFoldersWithCountsSubElementsByLocationUseCase?.let { loadSubFoldersWithCountsSubElementsByLocation(typeLocation, idLocation) }
+        getFoldersWithCountsSubElementsByLocationUseCase?.let {
+            val listFolders = getSubFoldersWithCountsSubElementsByLocation(typeLocation, idLocation) ?: return
+            _listFolders.value = formatCountersListFolders(listFolders)
+        }
+        getProjectsWithCountsSubElementsByLocationUseCase?.let {
+            val listProjects = loadSubProjectsWithCountsSubElementsByLocation(typeLocation, idLocation) ?: return
+            _listProjects.value = formatCountersListProjects(listProjects)
+        }
+        getTasksWithCountsSubElementsByLocationUseCase?.let {
+            val listTasks = loadSubTasksWithCountsSubElementsByLocation(typeLocation, idLocation) ?: return
+            _listTasks.value = formatCountersListTasks(listTasks)
+        }
     }
 
     /**
      * Загружает внутренние папки элемента, используя тип и ID этого элемента как локацию внутренних папок.
+     * Также получая количество внутренних элементов.
      */
-    private suspend fun loadSubFoldersWithCountsSubElementsByLocation(typeLocation: TypeLocation, idLocation: Long) {
+    private suspend fun getSubFoldersWithCountsSubElementsByLocation(typeLocation: TypeLocation, idLocation: Long): List<FolderInfo>? {
         val param = LocationParam(typeLocation, idLocation)
         val result = getFoldersWithCountsSubElementsByLocationUseCase!!(param)
         when {
             result.isSuccess -> {
-                _listFolders.value = result.getOrThrow()
+                return result.getOrThrow()
             }
             result.isFailure -> {
 
             }
         }
+        return null
+    }
+
+    /**
+     * Загружает внутренние проекты элемента, используя тип и ID этого элемента как локацию внутренних проектов.
+     * Также получая количество внутренних элементов.
+     */
+    private suspend fun loadSubProjectsWithCountsSubElementsByLocation(typeLocation: TypeLocation, idLocation: Long): List<ProjectInfo>? {
+        val param = LocationParam(typeLocation, idLocation)
+        val result = getProjectsWithCountsSubElementsByLocationUseCase!!(param)
+        when {
+            result.isSuccess -> {
+                return result.getOrThrow()
+            }
+            result.isFailure -> {
+
+            }
+        }
+        return null
+    }
+
+    /**
+     * Загружает внутренние задачи элемента, используя тип и ID этого элемента как локацию внутренних задач.
+     * Также получая количество внутренних элементов.
+     */
+    private suspend fun loadSubTasksWithCountsSubElementsByLocation(typeLocation: TypeLocation, idLocation: Long): List<TaskInfo>? {
+        val param = LocationParam(typeLocation, idLocation)
+        val result = getTasksWithCountsSubElementsByLocationUseCase!!(param)
+        when {
+            result.isSuccess -> {
+                return result.getOrThrow()
+            }
+            result.isFailure -> {
+
+            }
+        }
+        return null
+    }
+
+    /**
+     * Форматирует строку описания как строку со счётчиками подэлементов списка папок.
+     *
+     * @param list Список папок, который нужно отформатировать
+     *
+     * @return Форматированный список папок
+     */
+    private fun formatCountersListFolders(list: List<FolderInfo>): List<FolderInfo> {
+        return list.map { element ->
+            if(element.countsSubElements != null) {
+                element.copy(description = getDeclension(element.countsSubElements!!))
+            } else {
+                element
+            }
+        }
+    }
+
+    private fun formatCountersListProjects(list: List<ProjectInfo>): List<ProjectInfo> {
+        return list.map { element ->
+            if(element.countsSubElements != null) {
+                element.copy(description = getDeclension(element.countsSubElements!!))
+            } else {
+                element
+            }
+        }
+    }
+
+    private fun formatCountersListTasks(list: List<TaskInfo>): List<TaskInfo> {
+        return list.map { element ->
+            if(element.countsSubElements != null) {
+                element.copy(description = getDeclension(element.countsSubElements!!))
+            } else {
+                element
+            }
+        }
+    }
+
+
+    private fun getDeclension(counters: ValuesElementsInfo): String? {
+        fun getWord(number: Int, forms: List<String>): String {
+            val n = number % 100
+            val lastDigit = n % 10
+
+            return when {
+                n in 11..19 -> forms[0]
+                lastDigit == 1 -> forms[1]
+                lastDigit in 2..4 -> forms[2]
+                else -> forms[0]
+            }
+        }
+
+        val folderDec = listOf("папок", "папка", "папки")
+        val projectDec = listOf("проектов", "проект", "проекта")
+        val taskDec = listOf("задач", "задача", "задачи")
+
+        val parts = mutableListOf<String>()
+        if (counters.folders > 0) {
+            parts.add("${counters.folders} ${getWord(counters.folders, folderDec)}")
+        }
+        if (counters.projects > 0) {
+            parts.add("${counters.projects} ${getWord(counters.projects, projectDec)}")
+        }
+        if (counters.tasks > 0) {
+            parts.add("${counters.tasks} ${getWord(counters.tasks, taskDec)}")
+        }
+
+        return if(parts.size == 0) null
+        else parts.joinToString(" ")
     }
 
 

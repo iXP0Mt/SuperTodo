@@ -17,8 +17,10 @@ import com.ixp0mt.supertodo.domain.usecase.folder.SaveEditFolderUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.SaveEditProjectUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.SaveEditTaskUseCase
 import com.ixp0mt.supertodo.domain.usecase.folder.SaveNewFolderUseCase
+import com.ixp0mt.supertodo.domain.usecase.project.GetProjectsWithCountsSubElementsByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.SaveNewProjectUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.MarkCompleteProjectUseCase
+import com.ixp0mt.supertodo.domain.usecase.task.GetTasksWithCountsSubElementsByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.SaveNewTaskUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.MarkCompleteTaskUseCase
 import dagger.Module
@@ -145,5 +147,15 @@ class DomainModule {
     @Provides
     fun provideGetFoldersWithCountsSubElementsByLocationUseCase(folderRepository: FolderRepository): GetFoldersWithCountsSubElementsByLocationUseCase {
         return GetFoldersWithCountsSubElementsByLocationUseCase(folderRepository)
+    }
+
+    @Provides
+    fun provideGetProjectsWithCountsSubElementsByLocationUseCase(projectRepository: ProjectRepository): GetProjectsWithCountsSubElementsByLocationUseCase {
+        return GetProjectsWithCountsSubElementsByLocationUseCase(projectRepository)
+    }
+
+    @Provides
+    fun provideGetTasksWithCountsSubElementsByLocationUseCase(taskRepository: TaskRepository): GetTasksWithCountsSubElementsByLocationUseCase {
+        return GetTasksWithCountsSubElementsByLocationUseCase(taskRepository)
     }
 }

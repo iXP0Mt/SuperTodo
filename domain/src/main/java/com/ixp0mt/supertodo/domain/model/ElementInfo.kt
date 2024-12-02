@@ -7,4 +7,5 @@ interface ElementInfo {
     val description: String?
     val typeLocation: TypeLocation
     val idLocation: Long
+    val countsSubElements: ValuesElementsInfo?
 }

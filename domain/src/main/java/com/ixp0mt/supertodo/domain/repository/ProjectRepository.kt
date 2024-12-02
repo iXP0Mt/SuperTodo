@@ -14,6 +14,7 @@ interface ProjectRepository {
     suspend fun getById(param: GetProjectByIdParam): ProjectInfo
     suspend fun delete(project: ProjectInfo): Int
     suspend fun deleteByLocation(param: LocationParam): Int
+    suspend fun getWithCountsSubElementsByLocation(param: LocationParam): List<ProjectInfo>
     suspend fun setComplete(param: SetCompleteParam): Int
     suspend fun removeComplete(idProject: Long): Int
 }

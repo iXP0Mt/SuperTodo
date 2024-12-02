@@ -6,8 +6,10 @@ import com.ixp0mt.supertodo.domain.usecase.folder.GetFoldersByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.folder.GetFoldersWithCountsSubElementsByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.GetProjectByIdUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.GetProjectsByLocationUseCase
+import com.ixp0mt.supertodo.domain.usecase.project.GetProjectsWithCountsSubElementsByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.project.MarkCompleteProjectUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.GetTasksByLocationUseCase
+import com.ixp0mt.supertodo.domain.usecase.task.GetTasksWithCountsSubElementsByLocationUseCase
 import com.ixp0mt.supertodo.domain.usecase.task.MarkCompleteTaskUseCase
 import com.ixp0mt.supertodo.presentation.navigation.screen.Screen
 import com.ixp0mt.supertodo.presentation.screen.core.ElementViewModel
@@ -19,20 +21,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProjectViewModel @Inject constructor(
-    //getFoldersByLocationUseCase: GetFoldersByLocationUseCase,
     getFoldersWithCountsSubElementsByLocationUseCase: GetFoldersWithCountsSubElementsByLocationUseCase,
-    getProjectsByLocationUseCase: GetProjectsByLocationUseCase,
-    getTasksByLocationUseCase: GetTasksByLocationUseCase,
+    getProjectsWithCountsSubElementsByLocationUseCase: GetProjectsWithCountsSubElementsByLocationUseCase,
+    getTasksWithCountsSubElementsByLocationUseCase: GetTasksWithCountsSubElementsByLocationUseCase,
     getProjectByIdUseCase: GetProjectByIdUseCase,
     markCompleteProjectUseCase: MarkCompleteProjectUseCase,
     markCompleteTaskUseCase: MarkCompleteTaskUseCase,
     getNamesFullLocationElementUseCase: GetNamesFullLocationElementUseCase,
     deleteElementUseCase: DeleteElementUseCase
 ) : ElementViewModel(
-    //getFoldersByLocationUseCase = getFoldersByLocationUseCase,
     getFoldersWithCountsSubElementsByLocationUseCase = getFoldersWithCountsSubElementsByLocationUseCase,
-    getProjectsByLocationUseCase = getProjectsByLocationUseCase,
-    getTasksByLocationUseCase = getTasksByLocationUseCase,
+    getProjectsWithCountsSubElementsByLocationUseCase = getProjectsWithCountsSubElementsByLocationUseCase,
+    getTasksWithCountsSubElementsByLocationUseCase = getTasksWithCountsSubElementsByLocationUseCase,
     getProjectByIdUseCase = getProjectByIdUseCase,
     markCompleteProjectUseCase = markCompleteProjectUseCase,
     markCompleteTaskUseCase = markCompleteTaskUseCase,

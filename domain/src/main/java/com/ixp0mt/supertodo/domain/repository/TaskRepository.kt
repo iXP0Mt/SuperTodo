@@ -14,6 +14,7 @@ interface TaskRepository {
     suspend fun getById(param: GetTaskByIdParam): TaskInfo
     suspend fun delete(task: TaskInfo): Int
     suspend fun deleteByLocation(param: LocationParam): Int
+    suspend fun getWithCountsSubElementsByLocation(param: LocationParam): List<TaskInfo>
     suspend fun setComplete(param: SetCompleteParam): Int
     suspend fun removeComplete(idTask: Long): Int
 }

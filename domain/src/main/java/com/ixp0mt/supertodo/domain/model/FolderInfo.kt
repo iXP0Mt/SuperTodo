@@ -11,7 +11,7 @@ data class FolderInfo(
     val dateCreate: Long,
     val dateEdit: Long? = null,
     val dateArchive: Long? = null,
-    val countsSubElements: ValuesElementsInfo? = null
+    override val countsSubElements: ValuesElementsInfo? = null
 ) : ElementInfo {
     companion object {
         fun main(): FolderInfo {
