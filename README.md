@@ -14,9 +14,9 @@ SuperTodo (временное название) - это приложение д
 
 | Главная папка (стартовая страница) | Создание элемента |
 | :---: | :---: |
-| ![Main Folder \|250](screenshots/main_folder.jpg) | ![Create Element \|250](screenshots/create_element.jpg) |
+| <img src ="screenshots/main_folder.jpg" width=214> | <img src ="screenshots/create_element.jpg" width=214> |
 | Просмотр элемента | Изменение расположения элемента |
-| ![Element View \|250](screenshots/element_view.jpg) | ![Change Location \|250](screenshots/change_location.jpg) |
+| <img src ="screenshots/element_view.jpg" width=214> | <img src ="screenshots/change_location.jpg" width=214> |
 
 ## Тех. Стек
 - Разработка
