@@ -11,7 +11,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.remember
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
-import com.ixp0mt.supertodo.presentation.navigation.bottom.BottomBarViewModel
+import com.ixp0mt.supertodo.presentation.navigation.bottom.CustomBottomBarViewModel
 import com.ixp0mt.supertodo.presentation.navigation.screen.rememberScreenState
 import com.ixp0mt.supertodo.presentation.screen.app_entry.AppEntryScreen
 import com.ixp0mt.supertodo.ui.theme.SupertodoTheme
@@ -20,7 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val bottomBarViewModel: BottomBarViewModel by viewModels()
+    private val bottomBarViewModel: CustomBottomBarViewModel by viewModels()
 
     //@SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {

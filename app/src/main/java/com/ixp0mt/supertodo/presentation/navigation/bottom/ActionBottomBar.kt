@@ -14,14 +14,14 @@ sealed interface ActionBottomBar {
         val itemsForMainPanel = listOf(
             Navigation.Main,
             Empty,
-            ShowSecondPanel,
+            Empty,
             Empty,
             Empty
         )
         val itemsForSecondPanel = listOf(
             Navigation.CreateFolder,
             Navigation.CreateProject,
-            ShowMainPanel,
+            Empty,
             Navigation.CreateTask,
             Empty
         )

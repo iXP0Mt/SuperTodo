@@ -14,6 +14,8 @@ private val DarkColorScheme = darkColorScheme(
     primary = Primary,
     onPrimary = OnPrimary,
 
+    secondary = Secondary,
+
     background = Background,
     onBackground = OnBackground,
 
@@ -24,6 +26,8 @@ private val DarkColorScheme = darkColorScheme(
 private val LightColorScheme = lightColorScheme(
     primary = Primary,
     onPrimary = OnPrimary,
+
+    secondary = Secondary,
 
     background = Background,
     onBackground = OnBackground,

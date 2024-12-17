@@ -1,5 +1,6 @@
 package com.ixp0mt.supertodo.presentation.screen.app_entry
 
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -7,15 +8,15 @@ import androidx.navigation.NavHostController
 import com.ixp0mt.supertodo.presentation.component.SnackBar
 import com.ixp0mt.supertodo.presentation.navigation.AppNavHost
 import com.ixp0mt.supertodo.presentation.navigation.Routes
-import com.ixp0mt.supertodo.presentation.navigation.bottom.BottomBar
-import com.ixp0mt.supertodo.presentation.navigation.bottom.BottomBarViewModel
+import com.ixp0mt.supertodo.presentation.navigation.bottom.CustomBottomBar
+import com.ixp0mt.supertodo.presentation.navigation.bottom.CustomBottomBarViewModel
 import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
 import com.ixp0mt.supertodo.presentation.navigation.top.TopBar
 
 @Composable
 fun AppEntryScreen(
     screenState: ScreenState,
-    bottomBarViewModel: BottomBarViewModel,
+    bottomBarViewModel: CustomBottomBarViewModel,
     navHostController: NavHostController,
     snackbarHostState: SnackbarHostState
 ) {
@@ -31,18 +32,18 @@ fun AppEntryScreen(
             }
         },
         bottomBar = {
-                BottomBar(
-                    viewModel = bottomBarViewModel,
-                    currentRoute = screenState.currentScreen?.route?.fullRoute,
-                    onNavigationClick = { route ->
-                        navHostController.navigate(route) {
-                            launchSingleTop = true
-                            popUpTo(route) {
-                                inclusive = true
+                    CustomBottomBar(
+                        viewModel = bottomBarViewModel,
+                        currentRoute = screenState.currentScreen.route.fullRoute,
+                        onNavigationClick = { route ->
+                            navHostController.navigate(route) {
+                                launchSingleTop = true
+                                popUpTo(route) {
+                                    inclusive = true
+                                }
                             }
                         }
-                    }
-                )
+                    )
         },
         content = { paddingValues ->
             AppNavHost(
