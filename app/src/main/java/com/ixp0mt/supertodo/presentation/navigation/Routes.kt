@@ -1,6 +1,6 @@
 package com.ixp0mt.supertodo.presentation.navigation
 
-import com.ixp0mt.supertodo.domain.util.TypeLocation
+import com.ixp0mt.supertodo.domain.util.TypeElement
 
 
 sealed class Routes(
@@ -17,6 +17,8 @@ sealed class Routes(
         operator fun invoke(): String = rawRoute
     }
 
+
+    data object Default : NoArgumentsRoute("default")
 
     data object MainFolder : NoArgumentsRoute("main")
 
@@ -62,7 +64,7 @@ sealed class Routes(
     data object ChangeLocation : Routes("changeLocation", "TYPE", "ID") {
         const val TYPE = "TYPE"
         const val ID = "ID"
-        operator fun invoke(typeLocation: TypeLocation, idLocation: Long): String = rawRoute.appendArgs(TYPE to typeLocation, ID to idLocation)
+        operator fun invoke(typeLocation: TypeElement, idLocation: Long): String = rawRoute.appendArgs(TYPE to typeLocation, ID to idLocation)
     }
 }
 

@@ -9,7 +9,7 @@ import com.ixp0mt.supertodo.data.local.database.entity.Folder
 import com.ixp0mt.supertodo.data.local.database.entity.Project
 import com.ixp0mt.supertodo.data.local.database.entity.Task
 
-@Database(entities = [Folder::class, Project::class, Task::class], version = 3)
+@Database(entities = [Folder::class, Project::class, Task::class], version = 4)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun folderDao(): FolderDao
     abstract fun projectDao(): ProjectDao

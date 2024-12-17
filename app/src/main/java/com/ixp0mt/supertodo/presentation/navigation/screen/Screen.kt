@@ -13,6 +13,7 @@ import com.ixp0mt.supertodo.presentation.util.TypeAction
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.emptyFlow
 
 sealed interface Screen {
     val route: Routes
@@ -22,7 +23,19 @@ sealed interface Screen {
     val onNavigationIconClick: (() -> Unit)?
     val title: String
     val actionsTopBar: List<ActionTopBar>
+    val buttons: Flow<TypeAction>
 
+
+    class Default : Screen {
+        override val route: Routes = Routes.Default
+        override val isAppBarVisible: Boolean = false
+        override val navigationIcon: ImageVector? = null
+        override val navigationIconContentDescription: String? = null
+        override val onNavigationIconClick: (() -> Unit)? = null
+        override val title: String = ""
+        override val actionsTopBar: List<ActionTopBar> = emptyList()
+        override val buttons: Flow<TypeAction> = emptyFlow()
+    }
 
     class MainFolder : Screen {
         override val route: Routes = Routes.MainFolder
@@ -32,6 +45,7 @@ sealed interface Screen {
         override val title: String = "Главная папка"
         override val onNavigationIconClick: (() -> Unit)? = null
         override val actionsTopBar: List<ActionTopBar> = emptyList()
+        override val buttons: Flow<TypeAction> = emptyFlow()
     }
 
     class Folder : Screen {
@@ -39,7 +53,7 @@ sealed interface Screen {
         fun setTitle(title: String) { _title = title }
 
         private val _buttons = MutableSharedFlow<TypeAction>(extraBufferCapacity = 1)
-        val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
+        override val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
 
 
         override val route: Routes = Routes.Folder
@@ -56,7 +70,7 @@ sealed interface Screen {
 
     class FolderCreate : Screen {
         private val _buttons = MutableSharedFlow<TypeAction>(extraBufferCapacity = 1)
-        val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
+        override val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
 
         override val route: Routes = Routes.FolderCreate
         override val isAppBarVisible: Boolean = true
@@ -71,7 +85,7 @@ sealed interface Screen {
 
     class FolderEdit : Screen {
         private val _buttons = MutableSharedFlow<TypeAction>(extraBufferCapacity = 1)
-        val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
+        override val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
 
         override val route: Routes = Routes.FolderEdit
         override val isAppBarVisible: Boolean = true
@@ -86,7 +100,7 @@ sealed interface Screen {
 
     class Project : Screen {
         private val _buttons = MutableSharedFlow<TypeAction>(extraBufferCapacity = 1)
-        val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
+        override val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
 
         override val route: Routes = Routes.Project
         override val isAppBarVisible: Boolean = true
@@ -102,7 +116,7 @@ sealed interface Screen {
 
     class ProjectCreate : Screen {
         private val _buttons = MutableSharedFlow<TypeAction>(extraBufferCapacity = 1)
-        val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
+        override val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
 
         override val route: Routes = Routes.ProjectCreate
         override val isAppBarVisible: Boolean = true
@@ -117,7 +131,7 @@ sealed interface Screen {
 
     class ProjectEdit : Screen {
         private val _buttons = MutableSharedFlow<TypeAction>(extraBufferCapacity = 1)
-        val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
+        override val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
 
         override val route: Routes = Routes.ProjectEdit
         override val isAppBarVisible: Boolean = true
@@ -133,7 +147,7 @@ sealed interface Screen {
 
     class Task : Screen {
         private val _buttons = MutableSharedFlow<TypeAction>(extraBufferCapacity = 1)
-        val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
+        override val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
 
         override val route: Routes = Routes.Task
         override val isAppBarVisible: Boolean = true
@@ -149,7 +163,7 @@ sealed interface Screen {
 
     class TaskCreate : Screen {
         private val _buttons = MutableSharedFlow<TypeAction>(extraBufferCapacity = 1)
-        val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
+        override val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
 
         override val route: Routes = Routes.TaskCreate
         override val isAppBarVisible: Boolean = true
@@ -164,7 +178,7 @@ sealed interface Screen {
 
     class TaskEdit : Screen {
         private val _buttons = MutableSharedFlow<TypeAction>(extraBufferCapacity = 1)
-        val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
+        override val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
 
         override val route: Routes = Routes.TaskEdit
         override val isAppBarVisible: Boolean = true
@@ -179,7 +193,7 @@ sealed interface Screen {
 
     class ChangeLocation : Screen {
         private val _buttons = MutableSharedFlow<TypeAction>(extraBufferCapacity = 1)
-        val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
+        override val buttons: Flow<TypeAction> = _buttons.asSharedFlow()
 
         override val route: Routes = Routes.ChangeLocation
         override val isAppBarVisible: Boolean = true
@@ -194,7 +208,7 @@ sealed interface Screen {
 }
 
 
-fun getScreen(rawRoute: String?): Screen? {
+fun getScreen(rawRoute: String): Screen {
     return when(rawRoute) {
         Routes.MainFolder.rawRoute -> Screen.MainFolder()
 
@@ -211,6 +225,7 @@ fun getScreen(rawRoute: String?): Screen? {
         Routes.TaskEdit.rawRoute -> Screen.TaskEdit()
 
         Routes.ChangeLocation.rawRoute -> Screen.ChangeLocation()
-        else -> null
+
+        else -> Screen.Default()
     }
 }

@@ -20,11 +20,11 @@ fun ST_TextField(
     focusRequester: FocusRequester? = null
 ) {
     TextField(
+        value = value,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
             .then(if(focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier),
-        value = value,
         onValueChange = { onValueChange(it) },
         placeholder = placeholderText?.let { {
             Text(text = placeholderText)

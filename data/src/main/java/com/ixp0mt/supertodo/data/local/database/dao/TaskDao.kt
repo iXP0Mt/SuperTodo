@@ -6,9 +6,8 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.ixp0mt.supertodo.data.local.database.entity.Task
-import com.ixp0mt.supertodo.data.local.database.tuple.ProjectExt
 import com.ixp0mt.supertodo.data.local.database.tuple.TaskExt
-import com.ixp0mt.supertodo.domain.util.TypeLocation
+import com.ixp0mt.supertodo.domain.util.TypeElement
 
 @Dao
 interface TaskDao {
@@ -21,17 +20,14 @@ interface TaskDao {
     @Delete
     suspend fun delete(task: Task): Int
 
-    @Query("SELECT * FROM tasks WHERE typeLocation = :typeLocation")
-    suspend fun getByTypeLocation(typeLocation: TypeLocation): List<Task>
-
     @Query("SELECT * FROM tasks WHERE typeLocation = :typeLocation AND idLocation = :idLocation")
-    suspend fun getByLocation(typeLocation: TypeLocation, idLocation: Long): List<Task>
+    suspend fun getByLocation(typeLocation: TypeElement, idLocation: Long): List<Task>
 
     @Query("SELECT * FROM tasks WHERE idTask = :idTask")
     suspend fun getById(idTask: Long): Task
 
     @Query("DELETE FROM tasks WHERE typeLocation = :typeLocation AND idLocation = :idLocation")
-    suspend fun deleteByLocation(typeLocation: TypeLocation, idLocation: Long): Int
+    suspend fun deleteByLocation(typeLocation: TypeElement, idLocation: Long): Int
 
     @Query("UPDATE tasks SET dateCompleted = :date WHERE idTask = :idTask")
     suspend fun setComplete(idTask: Long, date: Long): Int
@@ -56,5 +52,5 @@ interface TaskDao {
         WHERE tasks.idLocation = :idLocation AND tasks.typeLocation = :typeLocation
         GROUP BY tasks.idTask
     """)
-    suspend fun getWithCountsInternalElements(typeLocation: TypeLocation, idLocation: Long, elementLocation: TypeLocation = TypeLocation.TASK): List<TaskExt>
+    suspend fun getWithCountsInternalElements(typeLocation: TypeElement, idLocation: Long, elementLocation: TypeElement = TypeElement.TASK): List<TaskExt>
 }

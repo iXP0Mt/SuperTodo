@@ -1,6 +1,5 @@
 package com.ixp0mt.supertodo.presentation.screen.location
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -31,48 +29,40 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ixp0mt.supertodo.domain.model.LocationParam
-import com.ixp0mt.supertodo.domain.util.TypeElement
-import com.ixp0mt.supertodo.presentation.component.ST_FolderCardSimple
-import com.ixp0mt.supertodo.presentation.component.ST_ProjectCardSimple
-import com.ixp0mt.supertodo.presentation.component.ST_TaskCardSimple
+import com.ixp0mt.supertodo.domain.model.ElementParam
+import com.ixp0mt.supertodo.presentation.component.ST_ElementCardSimple
 import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
+import com.ixp0mt.supertodo.presentation.screen.viewmodel_util.BaseScreen
 
 @Composable
 fun ChangeLocationScreen(
     viewModel: ChangeLocationViewModel = hiltViewModel(),
     screenState: ScreenState,
-    onBackClick: () -> Unit,
-    onSaveClick: (LocationParam) -> Unit,
-    onElementClick: (LocationParam) -> Unit
+    onSaveClick: (ElementParam) -> Unit,
+    onElementClick: (ElementParam) -> Unit,
+    onBackClick: () -> Unit
 ) {
-    DisposableEffect(Unit) {
-        viewModel.initScreen(screenState)
-        onDispose { viewModel.clearScreen() }
-    }
+    val locationAsElement by viewModel.locationAsElement.observeAsState()
+    val listSubElements by viewModel.listSubElements.observeAsState()
+    val iconIdLocation by viewModel.iconIdLocation.observeAsState()
 
-    val backClick by viewModel.backClick.observeAsState()
-    val saveClickInfo by viewModel.saveClickInfo.observeAsState()
-    val elementClickInfo by viewModel.elementClickInfo.observeAsState()
-
-    val listInternalFolders by viewModel.listFolders.observeAsState()
-    val listInternalProjects by viewModel.listProjects.observeAsState()
-    val listInternalTasks by viewModel.listTasks.observeAsState()
-
-    val elementOfLocation by viewModel.elementOfLocation.observeAsState()
     val showBackLocation by viewModel.showBackLocation.observeAsState()
+    val infoClickSave by viewModel.infoClickSave.observeAsState()
+    val infoClickSubElement by viewModel.infoClickSubElement.observeAsState()
 
-    val idIcon by viewModel.idIcon.observeAsState()
-
-    BackHandler { viewModel.handleBack() }
-    LaunchedEffect(backClick) { backClick?.let { onBackClick() } }
-    LaunchedEffect(saveClickInfo) { saveClickInfo?.let { onSaveClick(it) } }
-    LaunchedEffect(elementClickInfo) {
-        elementClickInfo?.let {
+    LaunchedEffect(infoClickSave) { infoClickSave?.let { onSaveClick(it) } }
+    LaunchedEffect(infoClickSubElement) {
+        infoClickSubElement?.let {
             onElementClick(it)
         }
     }
 
+
+    BaseScreen(
+        viewModel = viewModel,
+        screenState = screenState,
+        onBackClick = onBackClick
+    )
 
     Column {
         Row(
@@ -83,14 +73,14 @@ fun ChangeLocationScreen(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            idIcon?.let {
+            iconIdLocation?.let {
                 Icon(
                     modifier = Modifier.size(25.dp),
                     imageVector = ImageVector.vectorResource(id = it),
                     contentDescription = null
                 )
             }
-            elementOfLocation?.let {
+            locationAsElement?.let {
                 Text(text = it.name)
             }
         }
@@ -126,24 +116,10 @@ fun ChangeLocationScreen(
                 }
             }
 
-            items(listInternalFolders!!) {
-                ST_FolderCardSimple(
+            items(listSubElements!!) {
+                ST_ElementCardSimple(
                     item = it,
-                    onClick = {
-                        viewModel.elementClick(TypeElement.FOLDER, it.idFolder)
-                    }
-                )
-            }
-            items(listInternalProjects!!) {
-                ST_ProjectCardSimple(
-                    item = it,
-                    onClick = { viewModel.elementClick(TypeElement.PROJECT, it.idProject) }
-                )
-            }
-            items(listInternalTasks!!) {
-                ST_TaskCardSimple(
-                    item = it,
-                    onClick = { viewModel.elementClick(TypeElement.TASK, it.idTask) }
+                    onClick = { viewModel.elementClick(it.typeElement, it.idElement) }
                 )
             }
         }

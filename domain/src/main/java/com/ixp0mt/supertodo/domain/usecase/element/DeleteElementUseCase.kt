@@ -1,15 +1,15 @@
 package com.ixp0mt.supertodo.domain.usecase.element
 
-import com.ixp0mt.supertodo.domain.model.ElementInfo
-import com.ixp0mt.supertodo.domain.util.TypeLocation
-import com.ixp0mt.supertodo.domain.model.FolderInfo
-import com.ixp0mt.supertodo.domain.model.LocationParam
-import com.ixp0mt.supertodo.domain.model.ProjectInfo
+import com.ixp0mt.supertodo.domain.model.ElementParam
 import com.ixp0mt.supertodo.domain.model.ResponseDelete
-import com.ixp0mt.supertodo.domain.model.TaskInfo
+import com.ixp0mt.supertodo.domain.model.element.IElement
+import com.ixp0mt.supertodo.domain.model.folder.FolderInfo
+import com.ixp0mt.supertodo.domain.model.project.ProjectInfo
+import com.ixp0mt.supertodo.domain.model.task.TaskInfo
 import com.ixp0mt.supertodo.domain.repository.FolderRepository
 import com.ixp0mt.supertodo.domain.repository.ProjectRepository
 import com.ixp0mt.supertodo.domain.repository.TaskRepository
+import com.ixp0mt.supertodo.domain.util.TypeElement
 
 class DeleteElementUseCase(
     private val folderRepository: FolderRepository,
@@ -21,21 +21,16 @@ class DeleteElementUseCase(
     private var numDeletedTasks = 0
 
 
-    suspend operator fun invoke(element: ElementInfo): Result<ResponseDelete> {
-        return try {
-            deleteElement(element)
-            val responseDelete = ResponseDelete(
-                numDeletedFolders = numDeletedFolders.takeIf { it > 0 },
-                numDeletedProjects = numDeletedProjects.takeIf { it > 0 },
-                numDeletedTasks = numDeletedTasks.takeIf { it > 0 }
-            )
-            Result.success(responseDelete)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+    suspend operator fun invoke(element: IElement): ResponseDelete {
+        deleteElement(element)
+        return ResponseDelete(
+            numDeletedFolders = numDeletedFolders.takeIf { it > 0 },
+            numDeletedProjects = numDeletedProjects.takeIf { it > 0 },
+            numDeletedTasks = numDeletedTasks.takeIf { it > 0 }
+        )
     }
 
-    private suspend fun deleteElement(element: ElementInfo) {
+    private suspend fun deleteElement(element: IElement) {
         when (element) {
             is FolderInfo -> deleteFolder(element)
             is ProjectInfo -> deleteProject(element)
@@ -44,7 +39,7 @@ class DeleteElementUseCase(
     }
 
     private suspend fun deleteFolder(folder: FolderInfo) {
-        val param = LocationParam(TypeLocation.FOLDER, folder.idFolder)
+        val param = ElementParam(TypeElement.FOLDER, folder.id)
 
         folderRepository.getByLocation(param).forEach { deleteFolder(it) }
         projectRepository.getByLocation(param).forEach { deleteProject(it) }
@@ -55,7 +50,7 @@ class DeleteElementUseCase(
     }
 
     private suspend fun deleteProject(project: ProjectInfo) {
-        val param = LocationParam(TypeLocation.PROJECT, project.idProject)
+        val param = ElementParam(TypeElement.PROJECT, project.id)
 
         folderRepository.getByLocation(param).forEach { deleteFolder(it) }
         projectRepository.getByLocation(param).forEach { deleteProject(it) }
@@ -66,7 +61,7 @@ class DeleteElementUseCase(
     }
 
     private suspend fun deleteTask(task: TaskInfo) {
-        val param = LocationParam(TypeLocation.TASK, task.idTask)
+        val param = ElementParam(TypeElement.TASK, task.id)
 
         taskRepository.getByLocation(param).forEach { deleteTask(it) }
 

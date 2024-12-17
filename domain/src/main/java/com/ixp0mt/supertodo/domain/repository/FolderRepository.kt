@@ -1,17 +1,15 @@
 package com.ixp0mt.supertodo.domain.repository
 
-import com.ixp0mt.supertodo.domain.model.FolderInfo
-import com.ixp0mt.supertodo.domain.model.GetFolderByIdParam
-import com.ixp0mt.supertodo.domain.model.GetFoldersByTypeLocationParam
-import com.ixp0mt.supertodo.domain.model.LocationParam
+import com.ixp0mt.supertodo.domain.model.ElementParam
+import com.ixp0mt.supertodo.domain.model.folder.FolderInfo
+import com.ixp0mt.supertodo.domain.model.folder.FolderWithCounters
 
 interface FolderRepository {
     suspend fun saveNew(folder: FolderInfo): Long
     suspend fun saveEdit(folder: FolderInfo): Int
     suspend fun delete(folder: FolderInfo): Int
-    suspend fun getByTypeLocation(param: GetFoldersByTypeLocationParam): List<FolderInfo>
-    suspend fun getById(param: GetFolderByIdParam): FolderInfo
-    suspend fun getByLocation(param: LocationParam): List<FolderInfo>
-    suspend fun getWithCountsSubElementsByLocation(param: LocationParam): List<FolderInfo>
-    suspend fun deleteByLocation(param: LocationParam): Int
+    suspend fun getById(idFolder: Long): FolderInfo
+    suspend fun getByLocation(param: ElementParam): List<FolderInfo>
+    suspend fun getWithCountsSubElementsByLocation(param: ElementParam): List<FolderWithCounters>
+    suspend fun deleteByLocation(param: ElementParam): Int
 }

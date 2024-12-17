@@ -2,17 +2,13 @@ package com.ixp0mt.supertodo.data.repository
 
 import com.ixp0mt.supertodo.data.local.database.Database
 import com.ixp0mt.supertodo.data.local.database.entity.Task
-import com.ixp0mt.supertodo.data.local.database.tuple.ProjectExt
 import com.ixp0mt.supertodo.data.local.database.tuple.TaskExt
-import com.ixp0mt.supertodo.domain.model.GetTaskByIdParam
-import com.ixp0mt.supertodo.domain.model.GetTasksByTypeLocationParam
-import com.ixp0mt.supertodo.domain.model.LocationParam
-import com.ixp0mt.supertodo.domain.model.ProjectInfo
+import com.ixp0mt.supertodo.domain.model.ElementParam
 import com.ixp0mt.supertodo.domain.model.SetCompleteParam
-import com.ixp0mt.supertodo.domain.model.TaskInfo
-import com.ixp0mt.supertodo.domain.model.ValuesElementsInfo
+import com.ixp0mt.supertodo.domain.model.task.TaskInfo
+import com.ixp0mt.supertodo.domain.model.task.TaskWithCounters
 import com.ixp0mt.supertodo.domain.repository.TaskRepository
-import com.ixp0mt.supertodo.domain.util.TypeLocation
+import com.ixp0mt.supertodo.domain.util.TypeElement
 
 class TaskRepositoryImpl(private val database: Database) : TaskRepository {
     override suspend fun saveNew(task: TaskInfo): Long {
@@ -23,27 +19,23 @@ class TaskRepositoryImpl(private val database: Database) : TaskRepository {
         return database.saveEditTask(task.toData())
     }
 
-    override suspend fun getByTypeLocation(param: GetTasksByTypeLocationParam): List<TaskInfo> {
-        return database.getTasksByTypeLocation(param).toDomain()
-    }
-
-    override suspend fun getByLocation(param: LocationParam): List<TaskInfo> {
+    override suspend fun getByLocation(param: ElementParam): List<TaskInfo> {
         return database.getTasksByLocation(param).toDomain()
     }
 
-    override suspend fun getById(param: GetTaskByIdParam): TaskInfo {
-        return database.getTaskById(param).toDomain()
+    override suspend fun getById(idTask: Long): TaskInfo {
+        return database.getTaskById(idTask).toDomain()
     }
 
     override suspend fun delete(task: TaskInfo): Int {
         return database.deleteTask(task.toData())
     }
 
-    override suspend fun deleteByLocation(param: LocationParam): Int {
+    override suspend fun deleteByLocation(param: ElementParam): Int {
         return database.deleteTasksByLocation(param)
     }
 
-    override suspend fun getWithCountsSubElementsByLocation(param: LocationParam): List<TaskInfo> {
+    override suspend fun getWithCountsSubElementsByLocation(param: ElementParam): List<TaskWithCounters> {
         val response = database.getTasksWithCountsSubElementsByLocation(param)
         val result = response.toDomain2()
         return result
@@ -59,7 +51,7 @@ class TaskRepositoryImpl(private val database: Database) : TaskRepository {
 
 
     private fun Task.toDomain() = TaskInfo(
-        idTask = idTask,
+        id = idTask,
         name = name,
         description = description,
         typeLocation = typeLocation,
@@ -67,14 +59,14 @@ class TaskRepositoryImpl(private val database: Database) : TaskRepository {
         dateCreate = dateCreate,
         dateEdit = dateEdit,
         dateArchive = dateArchive,
-        dateStart = dateStart,
-        dateEnd = dateEnd,
-        dateCompleted = dateCompleted
+        datePlanStart = dateStart,
+        datePlanEnd = dateEnd,
+        dateFactEnd = dateCompleted
     )
 
     private fun List<Task>.toDomain() = this.map {
         TaskInfo(
-            idTask = it.idTask,
+            id = it.idTask,
             name = it.name,
             description = it.description,
             typeLocation = it.typeLocation,
@@ -82,14 +74,14 @@ class TaskRepositoryImpl(private val database: Database) : TaskRepository {
             dateCreate = it.dateCreate,
             dateEdit = it.dateEdit,
             dateArchive = it.dateArchive,
-            dateStart = it.dateStart,
-            dateEnd = it.dateEnd,
-            dateCompleted = it.dateCompleted
+            datePlanStart = it.dateStart,
+            datePlanEnd = it.dateEnd,
+            dateFactEnd = it.dateCompleted
         )
     }
 
     private fun TaskInfo.toData() = Task(
-        idTask = idTask,
+        idTask = id,
         name = name,
         description = description,
         typeLocation = typeLocation,
@@ -97,32 +89,30 @@ class TaskRepositoryImpl(private val database: Database) : TaskRepository {
         dateCreate = dateCreate,
         dateEdit = dateEdit,
         dateArchive = dateArchive,
-        dateStart = dateStart,
-        dateEnd = dateEnd,
-        dateCompleted = dateCompleted
+        dateStart = datePlanStart,
+        dateEnd = datePlanEnd,
+        dateCompleted = dateFactEnd
     )
 
     @Deprecated("Локация это костыль", level = DeprecationLevel.WARNING)
     // Жалуется на то, что компилятор не может распознать разные toDomain, потому что не учитывает входной тип
-    private fun List<TaskExt>.toDomain2(): List<TaskInfo> {
+    private fun List<TaskExt>.toDomain2(): List<TaskWithCounters> {
         return this.map {
-            TaskInfo(
-                idTask = it.idTask,
-                name = it.name,
-                description = null,
-                typeLocation = TypeLocation.MAIN,
-                idLocation = 0,
-                dateCreate = it.dateCreate,
-                dateEdit = it.dateEdit,
-                dateArchive = null,
-                dateStart = null,
-                dateEnd = null,
-                dateCompleted = it.dateCompleted,
-                countsSubElements = ValuesElementsInfo(
-                    it.countSubFolders,
-                    it.countSubProjects,
-                    it.countSubTasks
-                )
+            TaskWithCounters(
+                task = TaskInfo(
+                    id = it.idTask,
+                    name = it.name,
+                    description = null,
+                    typeLocation = TypeElement.DEFAULT,
+                    idLocation = 0,
+                    dateCreate = it.dateCreate,
+                    dateEdit = it.dateEdit,
+                    dateArchive = null,
+                    datePlanStart = null,
+                    datePlanEnd = null,
+                    dateFactEnd = it.dateCompleted
+                ),
+                countSubTasks = it.countSubTasks
             )
         }
     }

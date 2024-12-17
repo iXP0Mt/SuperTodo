@@ -1,3 +1,4 @@
+/*
 package com.ixp0mt.supertodo.presentation.component
 
 import androidx.compose.foundation.clickable
@@ -21,7 +22,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.ixp0mt.supertodo.R
-import com.ixp0mt.supertodo.domain.model.ProjectInfo
 
 @Composable
 fun ST_ProjectCardSimple(
@@ -67,4 +67,4 @@ fun ST_ProjectCardSimple(
             )
         }
     }
-}
+}*/

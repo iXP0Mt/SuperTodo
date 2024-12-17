@@ -6,7 +6,5 @@ class TaskExt(
     val dateCreate: Long,
     val dateEdit: Long?,
     val dateCompleted: Long?,
-    val countSubFolders: Int,
-    val countSubProjects: Int,
     val countSubTasks: Int,
 )

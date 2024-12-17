@@ -1,6 +1,5 @@
 package com.ixp0mt.supertodo.presentation.navigation.screen
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -22,7 +21,7 @@ class ScreenState(
     navController: NavController,
     scope: CoroutineScope
 ) {
-    var currentScreen by mutableStateOf<Screen?>(null)
+    var currentScreen by mutableStateOf<Screen>(Screen.Default())
         private set
 
     var currentArgs by mutableStateOf<Map<String, String>>(emptyMap())
@@ -60,9 +59,8 @@ class ScreenState(
         navController.currentBackStackEntryFlow
             .distinctUntilChanged()
             .onEach { backStackEntry ->
-                val rawRoute = backStackEntry.destination.route?.substringBefore("/")
+                val rawRoute = backStackEntry.destination.route?.substringBefore("/") ?: return@onEach
                 currentScreen = getScreen(rawRoute)
-                Log.d("ttt","currentSCREEN: $currentScreen")
 
                 val args = backStackEntry.arguments
                 currentArgs = args?.keySet()?.associateWith { key ->

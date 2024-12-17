@@ -7,7 +7,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.ixp0mt.supertodo.data.local.database.entity.Project
 import com.ixp0mt.supertodo.data.local.database.tuple.ProjectExt
-import com.ixp0mt.supertodo.domain.util.TypeLocation
+import com.ixp0mt.supertodo.domain.util.TypeElement
 
 @Dao
 interface ProjectDao {
@@ -20,17 +20,14 @@ interface ProjectDao {
     @Delete
     suspend fun delete(project: Project): Int
 
-    @Query("SELECT * FROM projects WHERE typeLocation = :typeLocation")
-    suspend fun getByTypeLocation(typeLocation: TypeLocation): List<Project>
-
     @Query("SELECT * FROM projects WHERE typeLocation = :typeLocation AND idLocation = :idLocation")
-    suspend fun getByLocation(typeLocation: TypeLocation, idLocation: Long): List<Project>
+    suspend fun getByLocation(typeLocation: TypeElement, idLocation: Long): List<Project>
 
     @Query("SELECT * FROM projects WHERE idProject = :idProject")
     suspend fun getById(idProject: Long): Project
 
     @Query("DELETE FROM projects WHERE typeLocation = :typeLocation AND idLocation = :idLocation")
-    suspend fun deleteByLocation(typeLocation: TypeLocation, idLocation: Long): Int
+    suspend fun deleteByLocation(typeLocation: TypeElement, idLocation: Long): Int
 
     @Query("UPDATE projects SET dateCompleted = :date WHERE idProject = :idProject")
     suspend fun setComplete(idProject: Long, date: Long): Int
@@ -55,5 +52,5 @@ interface ProjectDao {
         WHERE projects.idLocation = :idLocation AND projects.typeLocation = :typeLocation
         GROUP BY projects.idProject
     """)
-    suspend fun getWithCountsInternalElements(typeLocation: TypeLocation, idLocation: Long, elementLocation: TypeLocation = TypeLocation.PROJECT): List<ProjectExt>
+    suspend fun getWithCountsInternalElements(typeLocation: TypeElement, idLocation: Long, elementLocation: TypeElement = TypeElement.PROJECT): List<ProjectExt>
 }

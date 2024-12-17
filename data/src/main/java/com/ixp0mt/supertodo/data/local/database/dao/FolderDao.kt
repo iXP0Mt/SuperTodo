@@ -8,7 +8,6 @@ import androidx.room.Update
 import com.ixp0mt.supertodo.data.local.database.entity.Folder
 import com.ixp0mt.supertodo.data.local.database.tuple.FolderExt
 import com.ixp0mt.supertodo.domain.util.TypeElement
-import com.ixp0mt.supertodo.domain.util.TypeLocation
 
 @Dao
 interface FolderDao {
@@ -21,17 +20,14 @@ interface FolderDao {
     @Delete
     suspend fun delete(folder: Folder): Int
 
-    @Query("SELECT * FROM folders WHERE typeLocation = :typeLocation")
-    suspend fun getByTypeLocation(typeLocation: TypeLocation): List<Folder>
-
     @Query("SELECT * FROM folders WHERE idFolder = :idFolder")
     suspend fun getById(idFolder: Long): Folder
 
     @Query("SELECT * FROM folders WHERE typeLocation = :typeLocation AND idLocation = :idLocation")
-    suspend fun getByLocation(typeLocation: TypeLocation, idLocation: Long): List<Folder>
+    suspend fun getByLocation(typeLocation: TypeElement, idLocation: Long): List<Folder>
 
     @Query("DELETE FROM folders WHERE typeLocation = :typeLocation AND idLocation = :idLocation")
-    suspend fun deleteByLocation(typeLocation: TypeLocation, idLocation: Long): Int
+    suspend fun deleteByLocation(typeLocation: TypeElement, idLocation: Long): Int
 
     @Query("""
         SELECT 
@@ -49,5 +45,5 @@ interface FolderDao {
         WHERE folders.idLocation = :idLocation AND folders.typeLocation = :typeLocation
         GROUP BY folders.idFolder
     """)
-    suspend fun getWithCountsInternalElements(typeLocation: TypeLocation, idLocation: Long, elementLocation: TypeLocation = TypeLocation.FOLDER): List<FolderExt>
+    suspend fun getWithCountsInternalElements(typeLocation: TypeElement, idLocation: Long, elementLocation: TypeElement = TypeElement.FOLDER): List<FolderExt>
 }

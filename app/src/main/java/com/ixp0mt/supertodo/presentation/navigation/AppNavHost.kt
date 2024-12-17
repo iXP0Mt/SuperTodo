@@ -6,28 +6,30 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.ixp0mt.supertodo.domain.model.LocationParam
+import com.ixp0mt.supertodo.domain.model.ElementParam
 import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
 import com.ixp0mt.supertodo.presentation.screen.folder.FolderScreen
-import com.ixp0mt.supertodo.presentation.screen.folder.create.CreateFolderScreen
-import com.ixp0mt.supertodo.presentation.screen.folder.edit.EditFolderScreen
 import com.ixp0mt.supertodo.presentation.screen.main.MainFolderScreen
 import com.ixp0mt.supertodo.presentation.screen.project.ProjectScreen
-import com.ixp0mt.supertodo.presentation.screen.project.create.CreateProjectScreen
-import com.ixp0mt.supertodo.presentation.screen.project.edit.EditProjectScreen
 import com.ixp0mt.supertodo.presentation.screen.task.TaskScreen
-import com.ixp0mt.supertodo.presentation.screen.task.create.CreateTaskScreen
-import com.ixp0mt.supertodo.presentation.screen.task.edit.EditTaskScreen
 import com.ixp0mt.supertodo.domain.util.TypeElement
 import com.ixp0mt.supertodo.presentation.screen.location.ChangeLocationScreen
+import com.ixp0mt.supertodo.presentation.screen.viewmodel_util.EditorEditFolderViewModel
+import com.ixp0mt.supertodo.presentation.screen.viewmodel_util.EditorEditProjectViewModel
+import com.ixp0mt.supertodo.presentation.screen.viewmodel_util.EditorEditTaskViewModel
+import com.ixp0mt.supertodo.presentation.screen.viewmodel_util.EditorElementScreen
+import com.ixp0mt.supertodo.presentation.screen.viewmodel_util.EditorNewFolderViewModel
+import com.ixp0mt.supertodo.presentation.screen.viewmodel_util.EditorNewProjectViewModel
+import com.ixp0mt.supertodo.presentation.screen.viewmodel_util.EditorNewTaskViewModel
 
 
 @Composable
-fun  AppNavHost(
+fun AppNavHost(
     navHostController: NavHostController,
     screenState: ScreenState,
     startDestination: String,
@@ -44,7 +46,7 @@ fun  AppNavHost(
         startDestination = startDestination
     ) {
         composable(Routes.MainFolder.fullRoute) {
-            if(currentScreen == null) return@composable
+            if(currentScreen.route == Routes.Default) return@composable
 
             MainFolderScreen(
                 screenState = screenState,
@@ -52,7 +54,7 @@ fun  AppNavHost(
             )
         }
         composable(Routes.Folder.fullRoute) {
-            if(currentScreen == null) return@composable
+            if(currentScreen.route == Routes.Default) return@composable
 
             FolderScreen(
                 screenState = screenState,
@@ -65,11 +67,15 @@ fun  AppNavHost(
             )
         }
         composable(Routes.FolderCreate.fullRoute) {
-            if(currentScreen == null) return@composable
+            if(currentScreen.route == Routes.Default) return@composable
 
-            CreateFolderScreen(
+            val viewModel: EditorNewFolderViewModel = hiltViewModel()
+            EditorElementScreen(
+                viewModel = viewModel,
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
+                onClickChangeLocation = { navHostController.navigate(Routes.ChangeLocation(it.typeElement, it.idElement)) },
+                onBackClick = { navHostController.navigateBack() },
                 onSuccessSave = {
                     navigateToElementScreen(
                         navHostController = navHostController,
@@ -78,24 +84,25 @@ fun  AppNavHost(
                         clearPreviousRoute = Routes.FolderCreate.fullRoute
                     )
                 },
-                onBackClick = { navHostController.navigateBack() },
-                onLocationClick = { navHostController.navigate(Routes.ChangeLocation(it.typeLocation, it.idLocation)) }
             )
         }
         composable(Routes.FolderEdit.fullRoute) {
-            if(currentScreen == null) return@composable
+            if(currentScreen.route == Routes.Default) return@composable
 
-            EditFolderScreen(
+            val viewModel: EditorEditFolderViewModel = hiltViewModel()
+            EditorElementScreen(
+                viewModel = viewModel,
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
+                onClickChangeLocation = { navHostController.navigate(Routes.ChangeLocation(it.typeElement, it.idElement)) },
                 onBackClick = { navHostController.navigateBack() },
-                onLocationClick = { navHostController.navigate(Routes.ChangeLocation(it.typeLocation, it.idLocation)) }
+                onSuccessSave = { navHostController.navigateBack() }
             )
         }
 
 
         composable(Routes.Project.fullRoute) {
-            if(currentScreen == null) return@composable
+            if(currentScreen.route == Routes.Default) return@composable
 
             ProjectScreen(
                 screenState = screenState,
@@ -110,11 +117,15 @@ fun  AppNavHost(
             )
         }
         composable(Routes.ProjectCreate.fullRoute) {
-            if(currentScreen == null) return@composable
+            if(currentScreen.route == Routes.Default) return@composable
 
-            CreateProjectScreen(
+            val viewModel: EditorNewProjectViewModel = hiltViewModel()
+            EditorElementScreen(
+                viewModel = viewModel,
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
+                onClickChangeLocation = { navHostController.navigate(Routes.ChangeLocation(it.typeElement, it.idElement)) },
+                onBackClick = { navHostController.navigateBack() },
                 onSuccessSave = {
                     navigateToElementScreen(
                         navHostController = navHostController,
@@ -123,22 +134,23 @@ fun  AppNavHost(
                         clearPreviousRoute = Routes.ProjectCreate.fullRoute
                     )
                 },
-                onBackClick = { navHostController.navigateBack() },
-                onLocationClick = { navHostController.navigate(Routes.ChangeLocation(it.typeLocation, it.idLocation)) }
             )
         }
         composable(Routes.ProjectEdit.fullRoute) {
-            if(currentScreen == null) return@composable
+            if(currentScreen.route == Routes.Default) return@composable
 
-            EditProjectScreen(
+            val viewModel: EditorEditProjectViewModel = hiltViewModel()
+            EditorElementScreen(
+                viewModel = viewModel,
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
+                onClickChangeLocation = { navHostController.navigate(Routes.ChangeLocation(it.typeElement, it.idElement)) },
                 onBackClick = { navHostController.navigateBack() },
-                onLocationClick = { navHostController.navigate(Routes.ChangeLocation(it.typeLocation, it.idLocation)) }
+                onSuccessSave = { navHostController.navigateBack() }
             )
         }
         composable(Routes.Task.fullRoute) {
-            if(currentScreen == null) return@composable
+            if(currentScreen.route == Routes.Default) return@composable
 
             TaskScreen(
                 screenState = screenState,
@@ -151,13 +163,15 @@ fun  AppNavHost(
             )
         }
         composable(Routes.TaskCreate.fullRoute) {
-            if(currentScreen == null) return@composable
+            if(currentScreen.route == Routes.Default) return@composable
 
-            CreateTaskScreen(
+            val viewModel: EditorNewTaskViewModel = hiltViewModel()
+            EditorElementScreen(
+                viewModel = viewModel,
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
+                onClickChangeLocation = { navHostController.navigate(Routes.ChangeLocation(it.typeElement, it.idElement)) },
                 onBackClick = { navHostController.navigateBack() },
-                onLocationClick = { navHostController.navigate(Routes.ChangeLocation(it.typeLocation, it.idLocation)) },
                 onSuccessSave = {
                     navigateToElementScreen(
                         navHostController = navHostController,
@@ -169,31 +183,34 @@ fun  AppNavHost(
             )
         }
         composable(Routes.TaskEdit.fullRoute) {
-            if(currentScreen == null) return@composable
+            if(currentScreen.route == Routes.Default) return@composable
 
-            EditTaskScreen(
+            val viewModel: EditorEditTaskViewModel = hiltViewModel()
+            EditorElementScreen(
+                viewModel = viewModel,
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
+                onClickChangeLocation = { navHostController.navigate(Routes.ChangeLocation(it.typeElement, it.idElement)) },
                 onBackClick = { navHostController.navigateBack() },
-                onLocationClick = { navHostController.navigate(Routes.ChangeLocation(it.typeLocation, it.idLocation)) }
+                onSuccessSave = { navHostController.navigateBack() }
             )
         }
 
         composable(Routes.ChangeLocation.fullRoute) {
-            if(currentScreen == null) return@composable
+            if(currentScreen.route == Routes.Default) return@composable
 
             ChangeLocationScreen(
                 screenState = screenState,
                 onBackClick = { navHostController.navigateBack() },
-                onSaveClick = { locationParam: LocationParam ->
+                onSaveClick = { locationParam: ElementParam ->
                     if(navHostController.canGoBack) {
-                        navHostController.previousBackStackEntry?.savedStateHandle?.set("typeLocation", locationParam.typeLocation)
-                        navHostController.previousBackStackEntry?.savedStateHandle?.set("idLocation", locationParam.idLocation)
+                        navHostController.previousBackStackEntry?.savedStateHandle?.set("typeLocation", locationParam.typeElement)
+                        navHostController.previousBackStackEntry?.savedStateHandle?.set("idLocation", locationParam.idElement)
                         navHostController.popBackStack()
                     }
                 },
                 onElementClick = {
-                    navHostController.navigate(Routes.ChangeLocation(it.typeLocation, it.idLocation)) {
+                    navHostController.navigate(Routes.ChangeLocation(it.typeElement, it.idElement)) {
                         popUpTo(Routes.ChangeLocation.fullRoute) { inclusive = true }
                     }
                 },

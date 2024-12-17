@@ -1,41 +1,24 @@
 package com.ixp0mt.supertodo.presentation.screen.main
 
-import androidx.lifecycle.viewModelScope
-import com.ixp0mt.supertodo.domain.usecase.folder.GetFoldersWithCountsSubElementsByLocationUseCase
-import com.ixp0mt.supertodo.domain.usecase.project.GetProjectsByLocationUseCase
-import com.ixp0mt.supertodo.domain.usecase.project.GetProjectsWithCountsSubElementsByLocationUseCase
-import com.ixp0mt.supertodo.domain.usecase.project.MarkCompleteProjectUseCase
-import com.ixp0mt.supertodo.domain.usecase.task.GetTasksByLocationUseCase
-import com.ixp0mt.supertodo.domain.usecase.task.GetTasksWithCountsSubElementsByLocationUseCase
-import com.ixp0mt.supertodo.domain.usecase.task.MarkCompleteTaskUseCase
-import com.ixp0mt.supertodo.domain.util.TypeLocation
-import com.ixp0mt.supertodo.presentation.navigation.screen.Screen
-import com.ixp0mt.supertodo.presentation.navigation.screen.ScreenState
-import com.ixp0mt.supertodo.presentation.screen.core.ElementViewModel
+import com.ixp0mt.supertodo.domain.usecase.element.GetMainFolderUseCase
+import com.ixp0mt.supertodo.domain.usecase.element.GetSubElementsWithCountersUseCase
+import com.ixp0mt.supertodo.domain.usecase.element.MarkElementCompleteUseCase
+import com.ixp0mt.supertodo.presentation.screen.viewmodel_util.ElementViewModel
+import com.ixp0mt.supertodo.presentation.util.TypeAction
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainFolderViewModel @Inject constructor(
-    getFoldersWithCountsSubElementsByLocationUseCase: GetFoldersWithCountsSubElementsByLocationUseCase,
-    getProjectsWithCountsSubElementsByLocationUseCase: GetProjectsWithCountsSubElementsByLocationUseCase,
-    getTasksWithCountsSubElementsByLocationUseCase: GetTasksWithCountsSubElementsByLocationUseCase,
-    markCompleteProjectUseCase: MarkCompleteProjectUseCase,
-    markCompleteTaskUseCase: MarkCompleteTaskUseCase,
+    getMainFolderUseCase: GetMainFolderUseCase,
+    getSubElementsWithCountersUseCase: GetSubElementsWithCountersUseCase,
+    markElementCompleteUseCase: MarkElementCompleteUseCase
 ) : ElementViewModel(
-    getFoldersWithCountsSubElementsByLocationUseCase = getFoldersWithCountsSubElementsByLocationUseCase,
-    getProjectsWithCountsSubElementsByLocationUseCase = getProjectsWithCountsSubElementsByLocationUseCase,
-    getTasksWithCountsSubElementsByLocationUseCase = getTasksWithCountsSubElementsByLocationUseCase,
-    markCompleteProjectUseCase = markCompleteProjectUseCase,
-    markCompleteTaskUseCase = markCompleteTaskUseCase
+    getElementUseCase = getMainFolderUseCase,
+    getSubElementsWithCountersUseCase = getSubElementsWithCountersUseCase,
+    markElementCompleteUseCase = markElementCompleteUseCase
 ) {
-    override fun provideActions(screen: Screen, scope: CoroutineScope) {}
+    override suspend fun provideActions(button: TypeAction) {
 
-    override fun initElement(screenState: ScreenState) {
-        viewModelScope.launch {
-            loadSubElementsWithCountsSubElementsByLocation(TypeLocation.MAIN, 0)
-        }
     }
 }
