@@ -5,9 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ixp0mt.supertodo.R
 
-class CustomBottomBarViewModel(
-
-) : ViewModel() {
+class CustomBottomBarViewModel : ViewModel() {
 
     private val _bottomBarItems = MutableLiveData<List<ActionBottomBar>>(emptyList())
     val bottomBarItems: LiveData<List<ActionBottomBar>> = _bottomBarItems
@@ -37,8 +35,7 @@ class CustomBottomBarViewModel(
     }
 
     fun onCenterButtonClick() {
-        _centerButtonState.value = !_centerButtonState.value!!
-        loadNavigationItems()
+        toggleBottomBar()
     }
 
     fun onItemClick(item: ActionBottomBar) {
@@ -49,5 +46,15 @@ class CustomBottomBarViewModel(
 
     fun resetNavigation() {
         _navigationRoute.value = null
+    }
+
+    fun resetBottomBar() {
+        if(_centerButtonState.value != true)
+            toggleBottomBar()
+    }
+
+    private fun toggleBottomBar() {
+        _centerButtonState.value = !_centerButtonState.value!!
+        loadNavigationItems()
     }
 }
