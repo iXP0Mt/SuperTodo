@@ -37,22 +37,22 @@ class ScreenState(
         private set
 
     val isVisible: Boolean
-        @Composable get() = currentScreen?.isAppBarVisible == true
+        @Composable get() = currentScreen.isAppBarVisible
 
     val navigationIcon: ImageVector?
-        @Composable get() = currentScreen?.navigationIcon
+        @Composable get() = currentScreen.navigationIcon
 
     val navigationIconContentDescription: String?
-        @Composable get() = currentScreen?.navigationIconContentDescription
+        @Composable get() = currentScreen.navigationIconContentDescription
 
     val onNavigationIconClick: (() -> Unit)?
-        @Composable get() = currentScreen?.onNavigationIconClick
+        @Composable get() = currentScreen.onNavigationIconClick
 
     val title: String
-        @Composable get() = currentScreen?.title.orEmpty()
+        @Composable get() = currentScreen.title
 
     val actionsTopBar: List<ActionTopBar>
-        @Composable get() = currentScreen?.actionsTopBar.orEmpty()
+        get() = currentScreen.actionsTopBar
 
 
     init {

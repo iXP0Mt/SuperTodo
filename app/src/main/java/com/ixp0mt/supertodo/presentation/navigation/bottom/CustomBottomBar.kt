@@ -1,6 +1,5 @@
 package com.ixp0mt.supertodo.presentation.navigation.bottom
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -43,7 +42,6 @@ fun CustomBottomBar(
     }
 
     LaunchedEffect(currentRoute) {
-        Log.d("ttt","Смена рута: $currentRoute")
         viewModel.resetBottomBar()
     }
 
