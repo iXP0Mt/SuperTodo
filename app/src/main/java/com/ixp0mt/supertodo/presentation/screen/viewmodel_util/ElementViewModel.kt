@@ -11,6 +11,7 @@ import com.ixp0mt.supertodo.domain.usecase.element.GetElementUseCase
 import com.ixp0mt.supertodo.domain.usecase.element.GetStrCountersUseCase
 import com.ixp0mt.supertodo.domain.usecase.element.GetSubElementsWithCountersUseCase
 import com.ixp0mt.supertodo.domain.usecase.element.GetTypeElementUseCase
+import com.ixp0mt.supertodo.domain.usecase.element.GroupingListElementsUseCase
 import com.ixp0mt.supertodo.domain.usecase.element.IsElementCompleteUseCase
 import com.ixp0mt.supertodo.domain.usecase.element.MarkElementCompleteUseCase
 import com.ixp0mt.supertodo.domain.util.TypeElement
@@ -45,17 +46,25 @@ abstract class ElementViewModel(
 
         val currentElement = getElementUseCase(idElement)
 
-        _listSubElements.value = getSubElementsWithCountersUseCase(typeElement, idElement).toElementCardInfo()
+        val listSubElementsWithCounters = getSubElementsWithCountersUseCase(typeElement, idElement)
+        _listSubElements.value = prepareListElementsAsCardsInfo(listSubElementsWithCounters)
+
+        //_listSubElements.value = getSubElementsWithCountersUseCase(typeElement, idElement).toElementCardInfo()
         _currentElement.value = currentElement
     }
 
-    private fun List<IElement>.toElementCardInfo(): List<ElementCardInfo> {
 
+    private fun prepareListElementsAsCardsInfo(listElements: List<IElement>): List<ElementCardInfo> {
+        // Подготовка исходного списка элементов
+        val groupingListElementsUseCase = GroupingListElementsUseCase()
+        val tempListElements = groupingListElementsUseCase(listElements)
+
+        // Создание списка для отображения
         val getStrCountersUseCase = GetStrCountersUseCase()
         val isElementCompleteUseCase = IsElementCompleteUseCase()
         val getTypeElementUseCase = GetTypeElementUseCase()
 
-        return this.map { element ->
+        return tempListElements.map { element ->
             val typeElement = getTypeElementUseCase(element)
 
             ElementCardInfo(
@@ -68,6 +77,7 @@ abstract class ElementViewModel(
             )
         }
     }
+
 
     fun elementClick(typeElement: TypeElement, idElement: Long) {
         if (_infoClickSubElement.value == null) {
