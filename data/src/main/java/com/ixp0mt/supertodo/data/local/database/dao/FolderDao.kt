@@ -40,8 +40,8 @@ interface FolderDao {
             COUNT(DISTINCT subTasks.idTask) AS countSubTasks
         FROM folders
         LEFT JOIN folders subFolders ON subFolders.idLocation = folders.idFolder AND subFolders.typeLocation = :elementLocation
-        LEFT JOIN projects subProjects ON subProjects.idLocation = folders.idFolder AND subProjects.typeLocation = :elementLocation
-        LEFT JOIN tasks subTasks ON subTasks.idLocation = folders.idFolder AND subTasks.typeLocation = :elementLocation
+        LEFT JOIN projects subProjects ON subProjects.idLocation = folders.idFolder AND subProjects.typeLocation = :elementLocation AND subProjects.dateCompleted IS NULL
+        LEFT JOIN tasks subTasks ON subTasks.idLocation = folders.idFolder AND subTasks.typeLocation = :elementLocation AND subTasks.dateCompleted IS NULL
         WHERE folders.idLocation = :idLocation AND folders.typeLocation = :typeLocation
         GROUP BY folders.idFolder
     """)
