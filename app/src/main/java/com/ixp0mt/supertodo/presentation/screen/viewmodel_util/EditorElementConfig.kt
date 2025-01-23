@@ -56,7 +56,7 @@ class EditorNewProjectViewModel @Inject constructor(
     getLocationAsElementUseCase: GetLocationAsElementUseCase,
     createProjectUseCase: CreateProjectUseCase,
     saveNewProjectUseCase: SaveNewProjectUseCase
-) : EditorElementViewModel(
+) : EditorPlanElementViewModel(
     getElementUseCase = getProjectUseCase,
     validElementUseCase = validProjectUseCase,
     getLocationAsElementUseCase = getLocationAsElementUseCase,
@@ -71,7 +71,7 @@ class EditorEditProjectViewModel @Inject constructor(
     getLocationAsElementUseCase: GetLocationAsElementUseCase,
     createProjectUseCase: CreateProjectUseCase,
     saveEditProjectUseCase: SaveEditProjectUseCase
-) : EditorElementViewModel(
+) : EditorPlanElementViewModel(
     getElementUseCase = getProjectUseCase,
     validElementUseCase = validProjectUseCase,
     getLocationAsElementUseCase = getLocationAsElementUseCase,
@@ -86,7 +86,7 @@ class EditorNewTaskViewModel @Inject constructor(
     getLocationAsElementUseCase: GetLocationAsElementUseCase,
     createTaskUseCase: CreateTaskUseCase,
     saveNewTaskUseCase: SaveNewTaskUseCase
-) : EditorElementViewModel(
+) : EditorPlanElementViewModel(
     getElementUseCase = getTaskUseCase,
     validElementUseCase = validTaskUseCase,
     getLocationAsElementUseCase = getLocationAsElementUseCase,
@@ -101,7 +101,7 @@ class EditorEditTaskViewModel @Inject constructor(
     getLocationAsElementUseCase: GetLocationAsElementUseCase,
     createTaskUseCase: CreateTaskUseCase,
     saveEditTaskUseCase: SaveEditTaskUseCase
-) : EditorElementViewModel(
+) : EditorPlanElementViewModel(
     getElementUseCase = getTaskUseCase,
     validElementUseCase = validTaskUseCase,
     getLocationAsElementUseCase = getLocationAsElementUseCase,

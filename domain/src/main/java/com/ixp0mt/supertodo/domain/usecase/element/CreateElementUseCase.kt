@@ -1,6 +1,7 @@
 package com.ixp0mt.supertodo.domain.usecase.element
 
 import com.ixp0mt.supertodo.domain.model.element.IElement
+import com.ixp0mt.supertodo.domain.model.element.IElementPlan
 import com.ixp0mt.supertodo.domain.model.folder.FolderInfo
 import com.ixp0mt.supertodo.domain.model.project.ProjectInfo
 import com.ixp0mt.supertodo.domain.model.task.TaskInfo
@@ -15,7 +16,10 @@ interface CreateElementUseCase {
         idLocation: Long,
         dateCreate: Long,
         dateEdit: Long?,
-        dateArchive: Long?
+        dateArchive: Long?,
+        datePlanStart: Long? = null,
+        datePlanEnd: Long? = null,
+        dateFactEnd: Long? = null
     ): IElement
 }
 
@@ -28,7 +32,10 @@ class CreateFolderUseCase : CreateElementUseCase {
         idLocation: Long,
         dateCreate: Long,
         dateEdit: Long?,
-        dateArchive: Long?
+        dateArchive: Long?,
+        datePlanStart: Long?,
+        datePlanEnd: Long?,
+        dateFactEnd: Long?
     ): IElement {
         return FolderInfo(
             id = id,
@@ -52,7 +59,10 @@ class CreateProjectUseCase : CreateElementUseCase {
         idLocation: Long,
         dateCreate: Long,
         dateEdit: Long?,
-        dateArchive: Long?
+        dateArchive: Long?,
+        datePlanStart: Long?,
+        datePlanEnd: Long?,
+        dateFactEnd: Long?
     ): IElement {
         return ProjectInfo(
             id = id,
@@ -63,9 +73,9 @@ class CreateProjectUseCase : CreateElementUseCase {
             dateCreate = dateCreate,
             dateEdit = dateEdit,
             dateArchive = dateArchive,
-            datePlanStart = null,
-            datePlanEnd = null,
-            dateFactEnd = null
+            datePlanStart = datePlanStart,
+            datePlanEnd = datePlanEnd,
+            dateFactEnd = dateFactEnd
         )
     }
 }
@@ -79,7 +89,10 @@ class CreateTaskUseCase : CreateElementUseCase {
         idLocation: Long,
         dateCreate: Long,
         dateEdit: Long?,
-        dateArchive: Long?
+        dateArchive: Long?,
+        datePlanStart: Long?,
+        datePlanEnd: Long?,
+        dateFactEnd: Long?
     ): IElement {
         return TaskInfo(
             id = id,
@@ -90,9 +103,9 @@ class CreateTaskUseCase : CreateElementUseCase {
             dateCreate = dateCreate,
             dateEdit = dateEdit,
             dateArchive = dateArchive,
-            datePlanStart = null,
-            datePlanEnd = null,
-            dateFactEnd = null
+            datePlanStart = datePlanStart,
+            datePlanEnd = datePlanEnd,
+            dateFactEnd = dateFactEnd
         )
     }
 }

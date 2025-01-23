@@ -34,6 +34,7 @@ fun EditorElementScreen(
     snackbarHostState: SnackbarHostState,
     onClickChangeLocation: (ElementParam) -> Unit,
     onSuccessSave: (ElementParam) -> Unit,
+    specialField: (@Composable () -> Unit)? = null
 ) {
     BaseScreen(
         viewModel = viewModel,
@@ -103,6 +104,11 @@ fun EditorElementScreen(
             )
 
             Spacer(modifier = Modifier.height(10.dp))
+
+            specialField?.let {
+                it()
+                Spacer(modifier = Modifier.height(10.dp))
+            }
 
             ST_LocationCard(
                 name = locationName!!,

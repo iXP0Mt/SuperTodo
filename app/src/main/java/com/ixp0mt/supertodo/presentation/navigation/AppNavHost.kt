@@ -26,6 +26,7 @@ import com.ixp0mt.supertodo.presentation.screen.viewmodel_util.EditorElementScre
 import com.ixp0mt.supertodo.presentation.screen.viewmodel_util.EditorNewFolderViewModel
 import com.ixp0mt.supertodo.presentation.screen.viewmodel_util.EditorNewProjectViewModel
 import com.ixp0mt.supertodo.presentation.screen.viewmodel_util.EditorNewTaskViewModel
+import com.ixp0mt.supertodo.presentation.screen.viewmodel_util.EditorPlanElementScreen
 
 
 @Composable
@@ -120,7 +121,7 @@ fun AppNavHost(
             if(currentScreen.route == Routes.Default) return@composable
 
             val viewModel: EditorNewProjectViewModel = hiltViewModel()
-            EditorElementScreen(
+            EditorPlanElementScreen(
                 viewModel = viewModel,
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
@@ -140,7 +141,7 @@ fun AppNavHost(
             if(currentScreen.route == Routes.Default) return@composable
 
             val viewModel: EditorEditProjectViewModel = hiltViewModel()
-            EditorElementScreen(
+            EditorPlanElementScreen(
                 viewModel = viewModel,
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
@@ -166,7 +167,7 @@ fun AppNavHost(
             if(currentScreen.route == Routes.Default) return@composable
 
             val viewModel: EditorNewTaskViewModel = hiltViewModel()
-            EditorElementScreen(
+            EditorPlanElementScreen(
                 viewModel = viewModel,
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,
@@ -186,7 +187,7 @@ fun AppNavHost(
             if(currentScreen.route == Routes.Default) return@composable
 
             val viewModel: EditorEditTaskViewModel = hiltViewModel()
-            EditorElementScreen(
+            EditorPlanElementScreen(
                 viewModel = viewModel,
                 screenState = screenState,
                 snackbarHostState = snackbarHostState,

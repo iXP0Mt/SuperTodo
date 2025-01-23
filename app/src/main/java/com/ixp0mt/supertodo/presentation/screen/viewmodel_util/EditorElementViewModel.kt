@@ -59,6 +59,7 @@ open class EditorElementViewModel(
         _paramSavedElement.value = null
     }
 
+
     override suspend fun initData(screenState: ScreenState) {
 
         val idElement: Long = screenState.currentArgs["ID"]?.toLongOrNull() ?: 0
@@ -85,6 +86,7 @@ open class EditorElementViewModel(
             _showKeyboard.value = true
     }
 
+
     override suspend fun provideActions(button: TypeAction) {
         when (button) {
             TypeAction.ACTION_NAV_BACK -> handleBack()
@@ -92,6 +94,7 @@ open class EditorElementViewModel(
             else -> Unit
         }
     }
+
 
     private fun getLocationFromCurrentElement(element: IElement): ElementParam? {
         if(element.typeLocation == TypeElement.DEFAULT) return null
@@ -133,10 +136,10 @@ open class EditorElementViewModel(
         _errorMsg.value = null
     }
 
-    private suspend fun handleSave() {
-        if (!handleValid()) return
+    protected open fun prepareElementToSave(): IElement?  {
+        if (!handleValid()) return null
 
-        val element = createElementUseCase(
+        return createElementUseCase(
             _currentElement.value!!.id,
             _textElement.value!!,
             _descElement.value,
@@ -144,8 +147,13 @@ open class EditorElementViewModel(
             _infoLocation.value!!.idElement,
             _currentElement.value!!.dateCreate,
             _currentElement.value!!.dateEdit,
-            _currentElement.value!!.dateArchive
+            _currentElement.value!!.dateArchive,
         )
+    }
+
+    private suspend fun handleSave() {
+
+        val element = prepareElementToSave() ?: return
 
         hideKeyboard()
 
