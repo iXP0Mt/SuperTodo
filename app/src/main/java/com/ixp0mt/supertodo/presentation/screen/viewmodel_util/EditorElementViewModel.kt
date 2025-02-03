@@ -23,7 +23,7 @@ open class EditorElementViewModel(
 
 ) : BaseViewModel() {
 
-    private val _currentElement = MutableLiveData<IElement>()
+    protected val _currentElement = MutableLiveData<IElement>()
 
     private val _infoLocation = MutableLiveData<ElementParam>()
 
