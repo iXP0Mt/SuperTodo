@@ -127,7 +127,7 @@ open class EditorElementViewModel(
         return ElementParam(typeLocation, idLocation)
     }
 
-    private fun setErrorMsg(error: String?) {
+    protected fun setErrorMsg(error: String?) {
         if(error == null) _errorMsg.value = "Unknown Error"
         else _errorMsg.value = error
     }

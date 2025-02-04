@@ -177,11 +177,13 @@ open class EditorPlanElementViewModel(
     fun onDateSelected(date: Long?, kind: KindDateTime) {
         if(date == null) return
 
-        setDate(date, kind)
-
         if(getTime(kind) == null) {
             setTime(28800000, kind) // 8:00
         }
+
+        if(!validDate(date, kind)) return showDialog(TypeDateTime.DATE, kind, false)
+
+        setDate(date, kind)
 
         updatePickerInfo(
             labelDate = toLabelDate(date),
@@ -192,6 +194,95 @@ open class EditorPlanElementViewModel(
         showFieldSelectTime(kind)
 
         showDialog(TypeDateTime.DATE, kind, false)
+    }
+
+    /*private fun validDate(date: Long, kind: KindDateTime): Boolean {
+        when(kind) {
+            KindDateTime.START -> {
+                if(_datePlanEnd.value != null) {
+                    if(date + (getTime(kind) ?: 0) > _datePlanEnd.value!! + _timePlanEnd.value!!) {
+                        setErrorMsg("Начальная дата не должна быть позже конечной")
+                        return false
+                    }
+                }
+            }
+            KindDateTime.END -> {
+                if(_datePlanStart.value != null) {
+                    if(date + (getTime(kind) ?: 0) < _datePlanStart.value!! + _timePlanStart.value!!) {
+                        setErrorMsg("Конечная дата не должна быть раньше начальной")
+                        return false
+                    }
+                }
+            }
+        }
+
+        return true
+    }*/
+
+    private fun validDate(dateInMillis: Long, kind: KindDateTime): Boolean {
+        var startDateTime: Long? = null
+        var endDateTime: Long? = null
+
+        when(kind) {
+            KindDateTime.START -> {
+                startDateTime = dateInMillis + getTime(KindDateTime.START)!!
+                endDateTime = getDate(KindDateTime.END)
+                if(endDateTime != null) endDateTime += getTime(KindDateTime.END)!!
+            }
+            KindDateTime.END -> {
+                endDateTime = dateInMillis + getTime(KindDateTime.END)!!
+                startDateTime = getDate(KindDateTime.START)
+                if(startDateTime != null) startDateTime += getTime(KindDateTime.START)!!
+            }
+        }
+
+        return validDateTime(startDateTime, endDateTime, kind)
+    }
+
+
+    private fun validTime(timeInMillis: Long, kind: KindDateTime): Boolean {
+        var startDateTime: Long? = null
+        var endDateTime: Long? = null
+
+        when(kind) {
+            KindDateTime.START -> {
+                startDateTime = timeInMillis + getDate(kind)!!
+
+                endDateTime = getDate(KindDateTime.END)
+                if(endDateTime != null) endDateTime += getTime(KindDateTime.END)!!
+            }
+            KindDateTime.END -> {
+                endDateTime = timeInMillis + getDate(kind)!!
+
+                startDateTime = getDate(KindDateTime.START)
+                if(startDateTime != null) startDateTime += getTime(KindDateTime.START)!!
+            }
+        }
+
+        return validDateTime(startDateTime, endDateTime, kind)
+    }
+
+    private fun validDateTime(startDateTime: Long?, endDateTime: Long?, kind: KindDateTime): Boolean {
+        when(kind) {
+            KindDateTime.START -> {
+                if(endDateTime != null) {
+                    if(startDateTime!! > endDateTime) {
+                        setErrorMsg("Начальные дата и время не должны быть позже конечных")
+                        return false
+                    }
+                }
+            }
+            KindDateTime.END -> {
+                if(startDateTime != null) {
+                    if(endDateTime!! < startDateTime) {
+                        setErrorMsg("Конечные дата и время не должны быть раньше начальных")
+                        return false
+                    }
+                }
+            }
+        }
+
+        return true
     }
 
     private fun showFieldSelectTime(kind: KindDateTime, state: Boolean = true) {
@@ -250,6 +341,8 @@ open class EditorPlanElementViewModel(
 
     fun onTimeSelected(hour: Int, minute: Int, kind: KindDateTime) {
         val timeInMillis = (hour*3600000 + minute*60000).toLong()
+
+        if(!validTime(timeInMillis, kind)) return showDialog(TypeDateTime.TIME, kind, false)
 
         setTime(timeInMillis, kind)
 
