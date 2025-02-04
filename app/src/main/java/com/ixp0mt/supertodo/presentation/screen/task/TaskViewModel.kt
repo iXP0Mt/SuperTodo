@@ -6,6 +6,7 @@ import com.ixp0mt.supertodo.domain.usecase.element.GetSubElementsWithCountersUse
 import com.ixp0mt.supertodo.domain.usecase.element.GetTaskUseCase
 import com.ixp0mt.supertodo.domain.usecase.element.MarkElementCompleteUseCase
 import com.ixp0mt.supertodo.presentation.screen.viewmodel_util.EssentialElementViewModel
+import com.ixp0mt.supertodo.presentation.screen.viewmodel_util.EssentialPlanElementViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -16,7 +17,7 @@ class TaskViewModel @Inject constructor(
     getTaskUseCase: GetTaskUseCase,
     getSubElementsWithCountersUseCase: GetSubElementsWithCountersUseCase,
     markElementCompleteUseCase: MarkElementCompleteUseCase
-) : EssentialElementViewModel(
+) : EssentialPlanElementViewModel(
     getListNamesPedigreeUseCase = getListNamesPedigreeUseCase,
     deleteElementUseCase = deleteElementUseCase,
     getElementUseCase = getTaskUseCase,

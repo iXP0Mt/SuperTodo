@@ -15,7 +15,8 @@ import androidx.compose.ui.unit.dp
 fun ST_ElementInfo(
     name: String,
     description: String?,
-    strPedigree: String
+    strPedigree: String,
+    specialField: (@Composable () -> Unit)? = null
 ) {
     Box(
         modifier = Modifier
@@ -56,6 +57,8 @@ fun ST_ElementInfo(
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
+
+            specialField?.let { it() }
         }
     }
 }

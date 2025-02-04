@@ -13,7 +13,8 @@ import com.ixp0mt.supertodo.presentation.component.ST_ElementInfo
 fun EssentialElementScreen(
     viewModel: EssentialElementViewModel,
     onEditClick: () -> Unit,
-    onElementClick: (ElementParam) -> Unit
+    onElementClick: (ElementParam) -> Unit,
+    specialField: (@Composable () -> Unit)? = null
 ) {
     val editClick by viewModel.editClick.observeAsState()
     val showDialogDelete by viewModel.showDialogDelete.observeAsState()
@@ -27,7 +28,8 @@ fun EssentialElementScreen(
         ST_ElementInfo(
             name = currentElement?.name ?: "",
             description = currentElement?.description ?: "",
-            strPedigree = pedigree!!
+            strPedigree = pedigree!!,
+            specialField = specialField
         )
 
         ElementScreen(
